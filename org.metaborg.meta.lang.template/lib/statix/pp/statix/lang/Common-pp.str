@@ -1,0 +1,133 @@
+module statix/pp/statix/lang/Common-pp
+
+imports
+  libstratego-gpp
+  libspoofax/sdf/pp
+  libspoofax/term/origin
+  libstratego-sglr
+  statix/signatures/statix/lang/Common-sig
+
+
+strategies
+  prettyprint-example =
+    prettyprint-Statix
+
+  prettyprint-Statix =
+    fail
+
+  prettyprint-Statix(|sort) =
+    fail
+
+
+strategies
+  prettyprint-SDF-start-symbols =
+    prettyprint-Statix-start-symbols
+
+  prettyprint-Statix-start-symbols =
+    fail
+
+
+strategies
+  prettyprint-Statix =
+    prettyprint-Statix-INT
+
+  prettyprint-Statix =
+    prettyprint-Statix-ID
+
+  prettyprint-Statix =
+    prettyprint-Statix-UCID
+
+  prettyprint-Statix =
+    prettyprint-Statix-LCID
+
+  prettyprint-Statix =
+    prettyprint-Statix-VARID
+
+  prettyprint-Statix =
+    prettyprint-Statix-STRID
+
+  prettyprint-Statix =
+    prettyprint-Statix-FileId
+
+  prettyprint-Statix =
+    prettyprint-Statix-ModuleId
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-INT>
+    where <?"INT"> sort
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-ID>
+    where <?"ID"> sort
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-UCID>
+    where <?"UCID"> sort
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-LCID>
+    where <?"LCID"> sort
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-VARID>
+    where <?"VARID"> sort
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-STRID>
+    where <?"STRID"> sort
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-FileId>
+    where <?"FileId"> sort
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-ModuleId>
+    where <?"ModuleId"> sort
+
+  prettyprint-Statix-INT =
+    ![S(<is-string>)]
+
+  prettyprint-Statix-ID =
+    ![S(<is-string>)]
+
+  prettyprint-Statix-UCID =
+    ![S(<is-string>)]
+
+  prettyprint-Statix-LCID =
+    ![S(<is-string>)]
+
+  prettyprint-Statix-VARID =
+    ![S(<is-string>)]
+
+  prettyprint-Statix-STRID =
+    ![S(<is-string>)]
+
+  prettyprint-Statix-FileId =
+    ![S(<is-string>)]
+
+  prettyprint-Statix-ModuleId =
+    ![S(<is-string>)]
+
+  prettyprint-Statix-INT :
+    amb([h|hs]) -> <prettyprint-Statix-INT> h
+
+  prettyprint-Statix-ID :
+    amb([h|hs]) -> <prettyprint-Statix-ID> h
+
+  prettyprint-Statix-UCID :
+    amb([h|hs]) -> <prettyprint-Statix-UCID> h
+
+  prettyprint-Statix-LCID :
+    amb([h|hs]) -> <prettyprint-Statix-LCID> h
+
+  prettyprint-Statix-VARID :
+    amb([h|hs]) -> <prettyprint-Statix-VARID> h
+
+  prettyprint-Statix-STRID :
+    amb([h|hs]) -> <prettyprint-Statix-STRID> h
+
+  prettyprint-Statix-FileId :
+    amb([h|hs]) -> <prettyprint-Statix-FileId> h
+
+  prettyprint-Statix-ModuleId :
+    amb([h|hs]) -> <prettyprint-Statix-ModuleId> h

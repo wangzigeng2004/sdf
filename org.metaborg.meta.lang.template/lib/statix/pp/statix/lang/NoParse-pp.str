@@ -1,0 +1,378 @@
+module statix/pp/statix/lang/NoParse-pp
+
+imports
+  libstratego-gpp
+  libspoofax/sdf/pp
+  libspoofax/term/origin
+  libstratego-sglr
+  statix/signatures/statix/lang/NoParse-sig
+
+
+imports
+  statix/signatures/statix/lang/Common-sig
+  statix/signatures/statix/lang/Core-sig
+  statix/signatures/statix/lang/Sugar-sig
+
+
+imports
+  statix/pp/statix/lang/Common-pp
+  statix/pp/statix/lang/Core-pp
+  statix/pp/statix/lang/Sugar-pp
+
+
+strategies
+  prettyprint-example =
+    prettyprint-Statix
+
+  prettyprint-Statix =
+    fail
+
+  prettyprint-Statix(|sort) =
+    fail
+
+
+strategies
+  prettyprint-SDF-start-symbols =
+    prettyprint-Statix-start-symbols
+
+  prettyprint-Statix-start-symbols =
+    fail
+
+
+strategies
+  prettyprint-Statix =
+    prettyprint-Statix-Term
+
+  prettyprint-Statix =
+    prettyprint-Statix-SortRef
+
+  prettyprint-Statix =
+    prettyprint-Statix-Lift
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-Term>
+    where <?"Term"> sort
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-SortRef>
+    where <?"SortRef"> sort
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-Lift>
+    where <?"Lift"> sort
+
+  prettyprint-Statix-Term :
+    Tuple(t1__) -> [ H(
+                       [SOpt(HS(), "0")]
+                     , [ S("(")
+                       , t1__'
+                       , S(")")
+                       ]
+                     )
+                   ]
+    with t1__' := <pp-H-list(prettyprint-Statix-Term|", ")
+                   <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-Statix-Term =
+    ?Tuple(_)
+
+  Statix-get-indent :
+    (t@Tuple(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Term"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    (t@Tuple(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Term"> sort
+    with switch !index
+           case ?1 :
+             separator := ", "
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    (t@Tuple(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Term"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statix-SortRef :
+    TupleSort(t1__) -> [ H(
+                           [SOpt(HS(), "0")]
+                         , [ S("(")
+                           , t1__'
+                           , S(")")
+                           ]
+                         )
+                       ]
+    with t1__' := <pp-H-list(prettyprint-Statix-SortRef|" * ")
+                   <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-Statix-SortRef =
+    ?TupleSort(_)
+
+  Statix-get-indent :
+    (t@TupleSort(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"SortRef"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    (t@TupleSort(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"SortRef"> sort
+    with switch !index
+           case ?1 :
+             separator := " * "
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    (t@TupleSort(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"SortRef"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statix-Lift :
+    TupleLift(t1__) -> [ H(
+                           [SOpt(HS(), "0")]
+                         , [ S("(")
+                           , t1__'
+                           , S(")")
+                           ]
+                         )
+                       ]
+    with t1__' := <pp-H-list(prettyprint-Statix-Lift|", ")
+                   <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-Statix-Lift =
+    ?TupleLift(_)
+
+  Statix-get-indent :
+    (t@TupleLift(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Lift"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    (t@TupleLift(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Lift"> sort
+    with switch !index
+           case ?1 :
+             separator := ", "
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    (t@TupleLift(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Lift"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  is-Statix-Term =
+    fail
+
+  is-Statix-SortRef =
+    fail
+
+  is-Statix-Lift =
+    fail
+
+  prettyprint-Statix-Term :
+    amb([h|hs]) -> <prettyprint-Statix-Term> h
+
+  prettyprint-Statix-SortRef :
+    amb([h|hs]) -> <prettyprint-Statix-SortRef> h
+
+  prettyprint-Statix-Lift :
+    amb([h|hs]) -> <prettyprint-Statix-Lift> h
+
+  prettyprint-Statix-Term :
+    Term-Plhdr() -> [ H(
+                        [SOpt(HS(), "0")]
+                      , [S("$Term")]
+                      )
+                    ]
+
+  is-Statix-Term =
+    ?Term-Plhdr()
+
+  prettyprint-Statix-SortRef :
+    SortRef-Plhdr() -> [ H(
+                           [SOpt(HS(), "0")]
+                         , [S("$SortRef")]
+                         )
+                       ]
+
+  is-Statix-SortRef =
+    ?SortRef-Plhdr()
+
+  prettyprint-Statix-Lift :
+    Lift-Plhdr() -> [ H(
+                        [SOpt(HS(), "0")]
+                      , [S("$Lift")]
+                      )
+                    ]
+
+  is-Statix-Lift =
+    ?Lift-Plhdr()
+
+  prettyprint-Statix-Term :
+    Term-Plhdr(_) -> [ H(
+                         [SOpt(HS(), "0")]
+                       , [S("$Term")]
+                       )
+                     ]
+
+  is-Statix-Term =
+    ?Term-Plhdr(_)
+
+  prettyprint-Statix-SortRef :
+    SortRef-Plhdr(_) -> [ H(
+                            [SOpt(HS(), "0")]
+                          , [S("$SortRef")]
+                          )
+                        ]
+
+  is-Statix-SortRef =
+    ?SortRef-Plhdr(_)
+
+  prettyprint-Statix-Lift :
+    Lift-Plhdr(_) -> [ H(
+                         [SOpt(HS(), "0")]
+                       , [S("$Lift")]
+                       )
+                     ]
+
+  is-Statix-Lift =
+    ?Lift-Plhdr(_)
+
+  prettyprint-Statix-Term :
+    Term-Opt-Plhdr() -> [ H(
+                            []
+                          , [S("")]
+                          )
+                        ]
+
+  is-Statix-Term =
+    ?Term-Opt-Plhdr()
+
+  prettyprint-Statix-SortRef :
+    SortRef-Opt-Plhdr() -> [ H(
+                               []
+                             , [S("")]
+                             )
+                           ]
+
+  is-Statix-SortRef =
+    ?SortRef-Opt-Plhdr()
+
+  prettyprint-Statix-Lift :
+    Lift-Opt-Plhdr() -> [ H(
+                            []
+                          , [S("")]
+                          )
+                        ]
+
+  is-Statix-Lift =
+    ?Lift-Opt-Plhdr()
+
+
+strategies
+  prettyprint-Statix =
+    prettyprint-Statix-Term
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-Term>
+    where <?"Term"> sort
+
+  prettyprint-Statix-Term :
+    t1__ -> [ H(
+                [SOpt(HS(), "0")]
+              , [t1__']
+              )
+            ]
+    where not(is-Statix-Term)
+    where t1__' := <pp-one-Z(prettyprint-Statix-Label) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-Statix-Term =
+    fail
+
+  prettyprint-Statix-Term :
+    amb([h|hs]) -> <prettyprint-Statix-Term> h
+
+  prettyprint-Statix-Term :
+    Term-Plhdr() -> [ H(
+                        [SOpt(HS(), "0")]
+                      , [S("$Term")]
+                      )
+                    ]
+
+  is-Statix-Term =
+    ?Term-Plhdr()
+
+  prettyprint-Statix-Label :
+    Label-Plhdr() -> [ H(
+                         [SOpt(HS(), "0")]
+                       , [S("$Label")]
+                       )
+                     ]
+
+  is-Statix-Label =
+    ?Label-Plhdr()
+
+  prettyprint-Statix-Term :
+    Term-Plhdr(_) -> [ H(
+                         [SOpt(HS(), "0")]
+                       , [S("$Term")]
+                       )
+                     ]
+
+  is-Statix-Term =
+    ?Term-Plhdr(_)
+
+  prettyprint-Statix-Label :
+    Label-Plhdr(_) -> [ H(
+                          [SOpt(HS(), "0")]
+                        , [S("$Label")]
+                        )
+                      ]
+
+  is-Statix-Label =
+    ?Label-Plhdr(_)

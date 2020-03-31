@@ -1,0 +1,12 @@
+module statix/signatures/statix/lang/Common-sig
+
+signature
+  constructors
+     : String -> INT
+     : String -> ID
+     : String -> UCID
+     : String -> LCID
+     : String -> VARID
+     : String -> STRID
+     : String -> FileId
+     : String -> ModuleId

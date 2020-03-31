@@ -1,0 +1,27 @@
+module statix/signatures/statix/lang/NoParse-sig
+
+imports
+  statix/signatures/statix/lang/Common-sig
+  statix/signatures/statix/lang/Core-sig
+  statix/signatures/statix/lang/Sugar-sig
+
+
+signature
+  constructors
+    Tuple             : List(Term) -> Term
+    TupleSort         : List(SortRef) -> SortRef
+    TupleLift         : List(Lift) -> Lift
+    Term-Plhdr        : Term
+    SortRef-Plhdr     : SortRef
+    Lift-Plhdr        : Lift
+    Term-Plhdr        : COMPLETION-INSERTION -> Term
+    SortRef-Plhdr     : COMPLETION-INSERTION -> SortRef
+    Lift-Plhdr        : COMPLETION-INSERTION -> Lift
+    Term-Opt-Plhdr    : Term
+    SortRef-Opt-Plhdr : SortRef
+    Lift-Opt-Plhdr    : Lift
+                      : Label -> Term
+    Term-Plhdr        : Term
+    Label-Plhdr       : Label
+    Term-Plhdr        : COMPLETION-INSERTION -> Term
+    Label-Plhdr       : COMPLETION-INSERTION -> Label

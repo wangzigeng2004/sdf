@@ -1,0 +1,427 @@
+module statix/signatures/statix/lang/Core-sig
+
+imports
+  statix/signatures/statix/lang/Common-sig
+
+
+signature
+  constructors
+    Module                    : ModuleId * List(Section) -> Module
+    Imports                   : List(Import) -> Section
+    Import                    : ModuleId -> Import
+    Signature                 : List(Signature) -> Section
+    Rules                     : List(Rule) -> Section
+    Module-Plhdr              : Module
+    Import-Plhdr              : Import
+    ModuleId-Plhdr            : ModuleId
+    Signature-Plhdr           : Signature
+    Section-Plhdr             : Section
+    Rule-Plhdr                : Rule
+    Module-Plhdr              : COMPLETION-INSERTION -> Module
+    Import-Plhdr              : COMPLETION-INSERTION -> Import
+    ModuleId-Plhdr            : COMPLETION-INSERTION -> ModuleId
+    Signature-Plhdr           : COMPLETION-INSERTION -> Signature
+    Section-Plhdr             : COMPLETION-INSERTION -> Section
+    Rule-Plhdr                : COMPLETION-INSERTION -> Rule
+    Section-Opt-Plhdr         : Section
+    Import-Opt-Plhdr          : Import
+    Signature-Opt-Plhdr       : Signature
+    Rule-Opt-Plhdr            : Rule
+    Constraints               : List(CDecl) -> Signature
+    CDecl                     : CInd * ConstraintId * Type -> CDecl
+    InductiveC                : CInd
+    CoinductiveC              : CInd
+    Rule                      : RuleName * RuleHead * Constraint -> Rule
+    NoName                    : RuleName
+    Name                      : STRID -> RuleName
+    C                         : ConstraintId * List(Term) -> RuleHead
+    C                         : ConstraintId * List(Term) * Message -> Constraint
+    LLam                      : List(Term) * Constraint -> HoConstraint
+    Signature-Plhdr           : Signature
+    CDecl-Plhdr               : CDecl
+    Type-Plhdr                : Type
+    CInd-Plhdr                : CInd
+    Rule-Plhdr                : Rule
+    RuleName-Plhdr            : RuleName
+    STRID-Plhdr               : STRID
+    RuleHead-Plhdr            : RuleHead
+    ConstraintId-Plhdr        : ConstraintId
+    Message-Plhdr             : Message
+    HoConstraint-Plhdr        : HoConstraint
+    Term-Plhdr                : Term
+    Constraint-Plhdr          : Constraint
+    Signature-Plhdr           : COMPLETION-INSERTION -> Signature
+    CDecl-Plhdr               : COMPLETION-INSERTION -> CDecl
+    Type-Plhdr                : COMPLETION-INSERTION -> Type
+    CInd-Plhdr                : COMPLETION-INSERTION -> CInd
+    Rule-Plhdr                : COMPLETION-INSERTION -> Rule
+    RuleName-Plhdr            : COMPLETION-INSERTION -> RuleName
+    STRID-Plhdr               : COMPLETION-INSERTION -> STRID
+    RuleHead-Plhdr            : COMPLETION-INSERTION -> RuleHead
+    ConstraintId-Plhdr        : COMPLETION-INSERTION -> ConstraintId
+    Message-Plhdr             : COMPLETION-INSERTION -> Message
+    HoConstraint-Plhdr        : COMPLETION-INSERTION -> HoConstraint
+    Term-Plhdr                : COMPLETION-INSERTION -> Term
+    Constraint-Plhdr          : COMPLETION-INSERTION -> Constraint
+    CDecl-Opt-Plhdr           : CDecl
+    CInd-Opt-Plhdr            : CInd
+    RuleName-Opt-Plhdr        : RuleName
+    Term-Opt-Plhdr            : Term
+                              : String -> ConstraintId
+                              : String -> Keyword
+    CTrue                     : Constraint
+    CFalse                    : Message -> Constraint
+    CConj                     : Constraint * Constraint -> Constraint
+    CNew                      : List(Var) -> Constraint
+    CEqual                    : Term * Term * Message -> Constraint
+    CInequal                  : Term * Term * Message -> Constraint
+    CTry                      : Constraint * Message -> Constraint
+    CExists                   : List(Var) * Constraint -> Constraint
+    Term-Plhdr                : Term
+    Message-Plhdr             : Message
+    Var-Plhdr                 : Var
+    Constraint-Plhdr          : Constraint
+    Term-Plhdr                : COMPLETION-INSERTION -> Term
+    Message-Plhdr             : COMPLETION-INSERTION -> Message
+    Var-Plhdr                 : COMPLETION-INSERTION -> Var
+    Constraint-Plhdr          : COMPLETION-INSERTION -> Constraint
+    Var-Opt-Plhdr             : Var
+                              : String -> Keyword
+    CAstId                    : Term * Term -> Constraint
+    CAstProperty              : TermOrId * AstProperty * AstPropertyOp * Term -> Constraint
+    Prop                      : AstPropertyId -> AstProperty
+    Set                       : AstPropertyOp
+    Add                       : AstPropertyOp
+                              : Var -> TermOrId
+    Constraint-Plhdr          : Constraint
+    Term-Plhdr                : Term
+    AstProperty-Plhdr         : AstProperty
+    AstPropertyId-Plhdr       : AstPropertyId
+    AstPropertyOp-Plhdr       : AstPropertyOp
+    TermOrId-Plhdr            : TermOrId
+    Var-Plhdr                 : Var
+    Constraint-Plhdr          : COMPLETION-INSERTION -> Constraint
+    Term-Plhdr                : COMPLETION-INSERTION -> Term
+    AstProperty-Plhdr         : COMPLETION-INSERTION -> AstProperty
+    AstPropertyId-Plhdr       : COMPLETION-INSERTION -> AstPropertyId
+    AstPropertyOp-Plhdr       : COMPLETION-INSERTION -> AstPropertyOp
+    TermOrId-Plhdr            : COMPLETION-INSERTION -> TermOrId
+    Var-Plhdr                 : COMPLETION-INSERTION -> Var
+                              : String -> AstPropertyId
+                              : String -> Keyword
+    Relations                 : List(RelDecl) -> Signature
+    RelDecl                   : Label * Type -> RelDecl
+                              : Label -> RelRef
+                              : RelDecl -> Rule
+    Signature-Plhdr           : Signature
+    Type-Plhdr                : Type
+    RelRef-Plhdr              : RelRef
+    Label-Plhdr               : Label
+    Rule-Plhdr                : Rule
+    RelDecl-Plhdr             : RelDecl
+    Signature-Plhdr           : COMPLETION-INSERTION -> Signature
+    Type-Plhdr                : COMPLETION-INSERTION -> Type
+    RelRef-Plhdr              : COMPLETION-INSERTION -> RelRef
+    Label-Plhdr               : COMPLETION-INSERTION -> Label
+    Rule-Plhdr                : COMPLETION-INSERTION -> Rule
+    RelDecl-Plhdr             : COMPLETION-INSERTION -> RelDecl
+    RelDecl-Opt-Plhdr         : RelDecl
+    CTellRel                  : RelRef * CommaTerms * Term -> Constraint
+    Constraint-Plhdr          : Constraint
+    RelRef-Plhdr              : RelRef
+    CommaTerms-Plhdr          : CommaTerms
+    Term-Plhdr                : Term
+    Constraint-Plhdr          : COMPLETION-INSERTION -> Constraint
+    RelRef-Plhdr              : COMPLETION-INSERTION -> RelRef
+    CommaTerms-Plhdr          : COMPLETION-INSERTION -> CommaTerms
+    Term-Plhdr                : COMPLETION-INSERTION -> Term
+                              : String -> RelationId
+                              : String -> Keyword
+    Namespaces                : List(NsDecl) -> Signature
+    NameResolution            : List(ResolutionParam) -> Signature
+    Labels                    : List(Label) -> ResolutionParam
+    Label                     : RelationId -> Label
+                              : Label -> EdgeRef
+    EOP                       : EdgeRef
+    NsDecl                    : NamespaceId * List(SortRef) -> NsDecl
+                              : NsDecl -> Rule
+                              : List(LabelPair) -> LabelPairs
+    LabelPair                 : EdgeRef * EdgeRef -> LabelPair
+                              : LabelPairs -> LabelOrd
+    Empty                     : LabelRE
+    Epsilon                   : LabelRE
+                              : Label -> LabelRE
+    Closure                   : LabelRE -> LabelRE
+    Neg                       : LabelRE -> LabelRE
+    Concat                    : LabelRE * LabelRE -> LabelRE
+    And                       : LabelRE * LabelRE -> LabelRE
+    Or                        : LabelRE * LabelRE -> LabelRE
+    Signature-Plhdr           : Signature
+    ResolutionParam-Plhdr     : ResolutionParam
+    RelationId-Plhdr          : RelationId
+    NamespaceId-Plhdr         : NamespaceId
+    SortRef-Plhdr             : SortRef
+    Rule-Plhdr                : Rule
+    NsDecl-Plhdr              : NsDecl
+    LabelPair-Plhdr           : LabelPair
+    EdgeRef-Plhdr             : EdgeRef
+    LabelOrd-Plhdr            : LabelOrd
+    LabelPairs-Plhdr          : LabelPairs
+    Label-Plhdr               : Label
+    LabelRE-Plhdr             : LabelRE
+    Signature-Plhdr           : COMPLETION-INSERTION -> Signature
+    ResolutionParam-Plhdr     : COMPLETION-INSERTION -> ResolutionParam
+    RelationId-Plhdr          : COMPLETION-INSERTION -> RelationId
+    NamespaceId-Plhdr         : COMPLETION-INSERTION -> NamespaceId
+    SortRef-Plhdr             : COMPLETION-INSERTION -> SortRef
+    Rule-Plhdr                : COMPLETION-INSERTION -> Rule
+    NsDecl-Plhdr              : COMPLETION-INSERTION -> NsDecl
+    LabelPair-Plhdr           : COMPLETION-INSERTION -> LabelPair
+    EdgeRef-Plhdr             : COMPLETION-INSERTION -> EdgeRef
+    LabelOrd-Plhdr            : COMPLETION-INSERTION -> LabelOrd
+    LabelPairs-Plhdr          : COMPLETION-INSERTION -> LabelPairs
+    Label-Plhdr               : COMPLETION-INSERTION -> Label
+    LabelRE-Plhdr             : COMPLETION-INSERTION -> LabelRE
+    NsDecl-Opt-Plhdr          : NsDecl
+    ResolutionParam-Opt-Plhdr : ResolutionParam
+    Label-Opt-Plhdr           : Label
+    SortRef-Opt-Plhdr         : SortRef
+    LabelPair-Opt-Plhdr       : LabelPair
+                              : Occurrence -> Term
+                              : Path -> Term
+                              : OccurrenceLit -> Occurrence
+                              : PathLit -> Path
+                              : List(OccurrenceTerm) -> OccurrenceTerms
+                              : Term -> OccurrenceTerm
+    Occurrence-Plhdr          : Occurrence
+    OccurrenceLit-Plhdr       : OccurrenceLit
+    Path-Plhdr                : Path
+    PathLit-Plhdr             : PathLit
+    OccurrenceTerms-Plhdr     : OccurrenceTerms
+    OccurrenceTerm-Plhdr      : OccurrenceTerm
+    Var-Plhdr                 : Var
+    Term-Plhdr                : Term
+    Occurrence-Plhdr          : COMPLETION-INSERTION -> Occurrence
+    OccurrenceLit-Plhdr       : COMPLETION-INSERTION -> OccurrenceLit
+    Path-Plhdr                : COMPLETION-INSERTION -> Path
+    PathLit-Plhdr             : COMPLETION-INSERTION -> PathLit
+    OccurrenceTerms-Plhdr     : COMPLETION-INSERTION -> OccurrenceTerms
+    OccurrenceTerm-Plhdr      : COMPLETION-INSERTION -> OccurrenceTerm
+    Var-Plhdr                 : COMPLETION-INSERTION -> Var
+    Term-Plhdr                : COMPLETION-INSERTION -> Term
+    OccurrenceTerm-Opt-Plhdr  : OccurrenceTerm
+    NoId                      : OccurrencePosition
+    WithId                    : TermOrId -> OccurrencePosition
+    NoId                      : OccurrencePosition
+    Occurrence                : NamespaceId * OccurrenceTerms * OccurrencePosition -> OccurrenceLit
+    PathEmpty                 : Term -> PathLit
+    PathStep                  : Term * Term * Term -> PathLit
+    CTellEdge                 : Term * Label * Term -> Constraint
+    TermOrId-Plhdr            : TermOrId
+    OccurrenceLit-Plhdr       : OccurrenceLit
+    NamespaceId-Plhdr         : NamespaceId
+    OccurrenceTerms-Plhdr     : OccurrenceTerms
+    OccurrencePosition-Plhdr  : OccurrencePosition
+    PathLit-Plhdr             : PathLit
+    Constraint-Plhdr          : Constraint
+    Label-Plhdr               : Label
+    Term-Plhdr                : Term
+    TermOrId-Plhdr            : COMPLETION-INSERTION -> TermOrId
+    OccurrenceLit-Plhdr       : COMPLETION-INSERTION -> OccurrenceLit
+    NamespaceId-Plhdr         : COMPLETION-INSERTION -> NamespaceId
+    OccurrenceTerms-Plhdr     : COMPLETION-INSERTION -> OccurrenceTerms
+    OccurrencePosition-Plhdr  : COMPLETION-INSERTION -> OccurrencePosition
+    PathLit-Plhdr             : COMPLETION-INSERTION -> PathLit
+    Constraint-Plhdr          : COMPLETION-INSERTION -> Constraint
+    Label-Plhdr               : COMPLETION-INSERTION -> Label
+    Term-Plhdr                : COMPLETION-INSERTION -> Term
+                              : String -> NamespaceId
+                              : String -> Keyword
+    CResolveQuery             : QueryTarget * QueryFilter * QueryMin * Term * Term * Message -> Constraint
+    EOP                       : QueryTarget
+                              : RelRef -> QueryTarget
+    Filter                    : LabelRE * HoConstraint -> QueryFilter
+    Min                       : LabelOrd * HoConstraint -> QueryMin
+    Constraint-Plhdr          : Constraint
+    Term-Plhdr                : Term
+    Message-Plhdr             : Message
+    QueryTarget-Plhdr         : QueryTarget
+    RelRef-Plhdr              : RelRef
+    QueryFilter-Plhdr         : QueryFilter
+    LabelRE-Plhdr             : LabelRE
+    QueryMin-Plhdr            : QueryMin
+    LabelOrd-Plhdr            : LabelOrd
+    HoConstraint-Plhdr        : HoConstraint
+    Constraint-Plhdr          : COMPLETION-INSERTION -> Constraint
+    Term-Plhdr                : COMPLETION-INSERTION -> Term
+    Message-Plhdr             : COMPLETION-INSERTION -> Message
+    QueryTarget-Plhdr         : COMPLETION-INSERTION -> QueryTarget
+    RelRef-Plhdr              : COMPLETION-INSERTION -> RelRef
+    QueryFilter-Plhdr         : COMPLETION-INSERTION -> QueryFilter
+    LabelRE-Plhdr             : COMPLETION-INSERTION -> LabelRE
+    QueryMin-Plhdr            : COMPLETION-INSERTION -> QueryMin
+    LabelOrd-Plhdr            : COMPLETION-INSERTION -> LabelOrd
+    HoConstraint-Plhdr        : COMPLETION-INSERTION -> HoConstraint
+                              : String -> Keyword
+    Sorts                     : List(SortDecl) -> Signature
+    Constructors              : List(OpDecl) -> Signature
+    SortDecl                  : SortId -> SortDecl
+    SortAlias                 : SortId * SortRef -> SortDecl
+    SimpleSort                : SortId -> Sort
+                              : Sort -> SortRef
+    ListSort                  : SortRef -> SortRef
+    Tuple0Sort                : SortRef
+    TupleNSort                : SortRef * List(SortRef) -> SortRef
+    IntSort                   : SortRef
+    StringSort                : SortRef
+    PathSort                  : SortRef
+    LabelSort                 : SortRef
+    OccurrenceSort            : SortRef
+    ScopeSort                 : SortRef
+    AstIdSort                 : SortRef
+    OpDecl                    : OpId * OpSort -> OpDecl
+    ConstOp                   : Sort -> OpSort
+    ArrowOp                   : List(SortRef) * Sort -> OpSort
+    SimpleType                : List(SortRef) -> Type
+    Signature-Plhdr           : Signature
+    SortDecl-Plhdr            : SortDecl
+    SortId-Plhdr              : SortId
+    OpDecl-Plhdr              : OpDecl
+    OpId-Plhdr                : OpId
+    OpSort-Plhdr              : OpSort
+    Sort-Plhdr                : Sort
+    Type-Plhdr                : Type
+    SortRef-Plhdr             : SortRef
+    Signature-Plhdr           : COMPLETION-INSERTION -> Signature
+    SortDecl-Plhdr            : COMPLETION-INSERTION -> SortDecl
+    SortId-Plhdr              : COMPLETION-INSERTION -> SortId
+    OpDecl-Plhdr              : COMPLETION-INSERTION -> OpDecl
+    OpId-Plhdr                : COMPLETION-INSERTION -> OpId
+    OpSort-Plhdr              : COMPLETION-INSERTION -> OpSort
+    Sort-Plhdr                : COMPLETION-INSERTION -> Sort
+    Type-Plhdr                : COMPLETION-INSERTION -> Type
+    SortRef-Plhdr             : COMPLETION-INSERTION -> SortRef
+    SortDecl-Opt-Plhdr        : SortDecl
+    OpDecl-Opt-Plhdr          : OpDecl
+    SortRef-Opt-Plhdr         : SortRef
+                              : String -> SortId
+                              : String -> OpId
+    Var                       : VARID -> Var
+    Wld                       : Var
+    Int                       : INT -> Int
+                              : Var -> Term
+                              : Int -> Term
+                              : Str -> Term
+    List                      : List(Term) -> Term
+    ListTail                  : List(Term) * Term -> Term
+    Tuple0                    : Term
+    TupleN                    : Term * List(Term) -> Term
+    As                        : Var * Term -> Term
+    Ascribe                   : Term * SortRef -> Term
+                              : List(Term) -> CommaTerms
+                              : List(Term) -> SpaceTerms
+    VARID-Plhdr               : VARID
+    INT-Plhdr                 : INT
+    Int-Plhdr                 : Int
+    Str-Plhdr                 : Str
+    Var-Plhdr                 : Var
+    SortRef-Plhdr             : SortRef
+    CommaTerms-Plhdr          : CommaTerms
+    SpaceTerms-Plhdr          : SpaceTerms
+    Term-Plhdr                : Term
+    VARID-Plhdr               : COMPLETION-INSERTION -> VARID
+    INT-Plhdr                 : COMPLETION-INSERTION -> INT
+    Int-Plhdr                 : COMPLETION-INSERTION -> Int
+    Str-Plhdr                 : COMPLETION-INSERTION -> Str
+    Var-Plhdr                 : COMPLETION-INSERTION -> Var
+    SortRef-Plhdr             : COMPLETION-INSERTION -> SortRef
+    CommaTerms-Plhdr          : COMPLETION-INSERTION -> CommaTerms
+    SpaceTerms-Plhdr          : COMPLETION-INSERTION -> SpaceTerms
+    Term-Plhdr                : COMPLETION-INSERTION -> Term
+    Term-Opt-Plhdr            : Term
+    Op                        : OpId * CommaTerms -> Term
+    Str                       : StrChars -> Str
+    Term-Plhdr                : Term
+    OpId-Plhdr                : OpId
+    CommaTerms-Plhdr          : CommaTerms
+    Str-Plhdr                 : Str
+    StrChars-Plhdr            : StrChars
+    Term-Plhdr                : COMPLETION-INSERTION -> Term
+    OpId-Plhdr                : COMPLETION-INSERTION -> OpId
+    CommaTerms-Plhdr          : COMPLETION-INSERTION -> CommaTerms
+    Str-Plhdr                 : COMPLETION-INSERTION -> Str
+    StrChars-Plhdr            : COMPLETION-INSERTION -> StrChars
+                              : String -> StrChars
+                              : String -> StrChar
+    CArith                    : ArithExp * ArithOp * ArithExp * Message -> Constraint
+    Equal                     : ArithOp
+    NotEqual                  : ArithOp
+    GreaterThanEqual          : ArithOp
+    LessThanEqual             : ArithOp
+    GreaterThan               : ArithOp
+    LessThan                  : ArithOp
+    Constraint-Plhdr          : Constraint
+    ArithExp-Plhdr            : ArithExp
+    Message-Plhdr             : Message
+    ArithOp-Plhdr             : ArithOp
+    Constraint-Plhdr          : COMPLETION-INSERTION -> Constraint
+    ArithExp-Plhdr            : COMPLETION-INSERTION -> ArithExp
+    Message-Plhdr             : COMPLETION-INSERTION -> Message
+    ArithOp-Plhdr             : COMPLETION-INSERTION -> ArithOp
+                              : Int -> ArithExp
+                              : Var -> ArithExp
+    Add                       : ArithExp * ArithExp -> ArithExp
+    Mul                       : ArithExp * ArithExp -> ArithExp
+    Sub                       : ArithExp * ArithExp -> ArithExp
+    Min                       : ArithExp * ArithExp -> ArithExp
+    Max                       : ArithExp * ArithExp -> ArithExp
+    Mod                       : ArithExp * ArithExp -> ArithExp
+    Div                       : ArithExp * ArithExp -> ArithExp
+    Int-Plhdr                 : Int
+    Var-Plhdr                 : Var
+    ArithExp-Plhdr            : ArithExp
+    Int-Plhdr                 : COMPLETION-INSERTION -> Int
+    Var-Plhdr                 : COMPLETION-INSERTION -> Var
+    ArithExp-Plhdr            : COMPLETION-INSERTION -> ArithExp
+    NoMessage                 : Message
+    Message                   : MessageKind * MessageContent * MessageOrigin -> Message
+    Error                     : MessageKind
+    Warning                   : MessageKind
+    Note                      : MessageKind
+    Message-Plhdr             : Message
+    MessageContent-Plhdr      : MessageContent
+    MessageOrigin-Plhdr       : MessageOrigin
+    MessageKind-Plhdr         : MessageKind
+    Message-Plhdr             : COMPLETION-INSERTION -> Message
+    MessageContent-Plhdr      : COMPLETION-INSERTION -> MessageContent
+    MessageOrigin-Plhdr       : COMPLETION-INSERTION -> MessageOrigin
+    MessageKind-Plhdr         : COMPLETION-INSERTION -> MessageKind
+    Message-Opt-Plhdr         : Message
+    Formatted                 : List(MessageContentPart) -> MessageContent
+    NoOrigin                  : MessageOrigin
+    Origin                    : Var -> MessageOrigin
+    MessageContent-Plhdr      : MessageContent
+    MessageContentPart-Plhdr  : MessageContentPart
+    MessageOrigin-Plhdr       : MessageOrigin
+    Var-Plhdr                 : Var
+    MessageContent-Plhdr      : COMPLETION-INSERTION -> MessageContent
+    MessageContentPart-Plhdr  : COMPLETION-INSERTION -> MessageContentPart
+    MessageOrigin-Plhdr       : COMPLETION-INSERTION -> MessageOrigin
+    Var-Plhdr                 : COMPLETION-INSERTION -> Var
+    NoMessage                 : MessageContent
+                              : Str -> MessageContent
+    Term                      : Term -> MessageContentPart
+    Text                      : MessageChars -> MessageContentPart
+    MessageContent-Plhdr      : MessageContent
+    Str-Plhdr                 : Str
+    Term-Plhdr                : Term
+    MessageContentPart-Plhdr  : MessageContentPart
+    MessageChars-Plhdr        : MessageChars
+    MessageContent-Plhdr      : COMPLETION-INSERTION -> MessageContent
+    Str-Plhdr                 : COMPLETION-INSERTION -> Str
+    Term-Plhdr                : COMPLETION-INSERTION -> Term
+    MessageContentPart-Plhdr  : COMPLETION-INSERTION -> MessageContentPart
+    MessageChars-Plhdr        : COMPLETION-INSERTION -> MessageChars
+    MessageContent-Opt-Plhdr  : MessageContent
+                              : String -> MessageChars
+                              : String -> MessageChar

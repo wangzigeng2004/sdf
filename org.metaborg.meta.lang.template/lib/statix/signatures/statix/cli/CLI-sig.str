@@ -1,0 +1,16 @@
+module statix/signatures/statix/cli/CLI-sig
+
+imports
+  statix/signatures/statix/lang/Layout-sig
+  statix/signatures/statix/lang/Common-sig
+  statix/signatures/statix/lang/Core-sig
+  statix/signatures/statix/lang/Sugar-sig
+
+
+signature
+  constructors
+    Eval              : Constraint -> CommandLine
+    CommandLine-Plhdr : CommandLine
+    Constraint-Plhdr  : Constraint
+    CommandLine-Plhdr : COMPLETION-INSERTION -> CommandLine
+    Constraint-Plhdr  : COMPLETION-INSERTION -> Constraint

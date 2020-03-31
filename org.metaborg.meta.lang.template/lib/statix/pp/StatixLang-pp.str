@@ -1,0 +1,144 @@
+module statix/pp/StatixLang-pp
+
+imports
+  libstratego-gpp
+  libspoofax/sdf/pp
+  libspoofax/term/origin
+  libstratego-sglr
+  statix/signatures/StatixLang-sig
+
+
+imports
+  statix/signatures/statix/lang/Layout-sig
+  statix/signatures/statix/lang/Common-sig
+  statix/signatures/statix/lang/Core-sig
+  statix/signatures/statix/lang/Sugar-sig
+  statix/signatures/statix/lang/Deprecated-sig
+  statix/signatures/statix/test/Test-sig
+  statix/signatures/statix/cli/CLI-sig
+
+
+imports
+  statix/pp/statix/lang/Layout-pp
+  statix/pp/statix/lang/Common-pp
+  statix/pp/statix/lang/Core-pp
+  statix/pp/statix/lang/Sugar-pp
+  statix/pp/statix/lang/Deprecated-pp
+  statix/pp/statix/cli/CLI-pp
+
+
+strategies
+  statix-prettyprint-example =
+    prettyprint-Statix
+
+  prettyprint-Statix =
+    fail
+
+  prettyprint-Statix(|sort) =
+    fail
+
+
+strategies
+  statix-prettyprint-SDF-start-symbols =
+    prettyprint-Statix-start-symbols
+
+  prettyprint-Statix-start-symbols =
+    fail
+
+
+strategies
+  prettyprint-Statix-start-symbols =
+    prettyprint-Statix-Start
+
+
+strategies
+  prettyprint-Statix =
+    prettyprint-Statix-Start
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-Start>
+    where <?"Start"> sort
+
+  prettyprint-Statix-Start :
+    t1__ -> [ H(
+                [SOpt(HS(), "0")]
+              , [t1__']
+              )
+            ]
+    where not(is-Statix-Start)
+    where t1__' := <pp-one-Z(prettyprint-Statix-Module) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  prettyprint-Statix-Start :
+    t1__ -> [ H(
+                [SOpt(HS(), "0")]
+              , [t1__']
+              )
+            ]
+    where not(is-Statix-Start)
+    where t1__' := <pp-one-Z(prettyprint-Statix-Test) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-Statix-Start =
+    fail
+
+  prettyprint-Statix-Start :
+    amb([h|hs]) -> <prettyprint-Statix-Start> h
+
+  prettyprint-Statix-Module :
+    Module-Plhdr() -> [ H(
+                          [SOpt(HS(), "0")]
+                        , [S("$Module")]
+                        )
+                      ]
+
+  is-Statix-Module =
+    ?Module-Plhdr()
+
+  prettyprint-Statix-Start :
+    Start-Plhdr() -> [ H(
+                         [SOpt(HS(), "0")]
+                       , [S("$Start")]
+                       )
+                     ]
+
+  is-Statix-Start =
+    ?Start-Plhdr()
+
+  prettyprint-Statix-Test :
+    Test-Plhdr() -> [ H(
+                        [SOpt(HS(), "0")]
+                      , [S("$Test")]
+                      )
+                    ]
+
+  is-Statix-Test =
+    ?Test-Plhdr()
+
+  prettyprint-Statix-Module :
+    Module-Plhdr(_) -> [ H(
+                           [SOpt(HS(), "0")]
+                         , [S("$Module")]
+                         )
+                       ]
+
+  is-Statix-Module =
+    ?Module-Plhdr(_)
+
+  prettyprint-Statix-Start :
+    Start-Plhdr(_) -> [ H(
+                          [SOpt(HS(), "0")]
+                        , [S("$Start")]
+                        )
+                      ]
+
+  is-Statix-Start =
+    ?Start-Plhdr(_)
+
+  prettyprint-Statix-Test :
+    Test-Plhdr(_) -> [ H(
+                         [SOpt(HS(), "0")]
+                       , [S("$Test")]
+                       )
+                     ]
+
+  is-Statix-Test =
+    ?Test-Plhdr(_)

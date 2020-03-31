@@ -1,0 +1,20 @@
+module statix/signatures/statix/test/Test-sig
+
+imports
+  statix/signatures/statix/lang/Layout-sig
+  statix/signatures/statix/lang/Common-sig
+  statix/signatures/statix/lang/Core-sig
+  statix/signatures/statix/lang/Sugar-sig
+  statix/signatures/statix/lang/Deprecated-sig
+
+
+signature
+  constructors
+    Test              : Constraint * List(Section) -> Test
+    Test-Plhdr        : Test
+    Constraint-Plhdr  : Constraint
+    Section-Plhdr     : Section
+    Test-Plhdr        : COMPLETION-INSERTION -> Test
+    Constraint-Plhdr  : COMPLETION-INSERTION -> Constraint
+    Section-Plhdr     : COMPLETION-INSERTION -> Section
+    Section-Opt-Plhdr : Section
