@@ -37,12 +37,17 @@ imports
 
 rules
 
+  // stx-generate-signatures :: SDF3.Module -> Statix.Module
   stx-generate-signatures = strip-annos; stx-module-to-sig
   
+  // stx-module-to-sig :: SDF3.Module -> Statix.Module
   stx-module-to-sig:
-    Module(Unparameterized(modname), imports, sections) -> Module(modname', [Signature([Sorts(<concatenate> (lexsorts, cfsorts)), Constructors(signatures)])])
-    with modname'  := <conc-strings> ("statix-signatures/", modname, "-sig")
-       ; imports' := <map(to-str-import(|"-sig", "statix-signatures"))> imports
+    Module(Unparameterized(modname), imports, sections) -> Module(modname', [
+    	Imports(imports'),
+    	Signature([Sorts(<concatenate> (lexsorts, cfsorts)), Constructors(signatures)])
+    ])
+    with modname' := <conc-strings> ("statix-signatures/", modname, "-sig")
+       ; imports' := <flatmap(stx-to-str-import(|"-sig", "statix-signatures"))> imports
        ; all-cfsortnames := <filter(not(?SDFSection(LexicalSyntax(_)))); collect-all(stx-collect-sorts)> sections
        ; all-lexsortnames := <filter(?SDFSection(LexicalSyntax(_))); collect-all(stx-collect-sorts)> sections
        ; lexsortnames := <isect> (all-cfsortnames, all-lexsortnames)		// only the lexical sort names that are used in the context-free rules
@@ -51,7 +56,7 @@ rules
        ; lexsorts := <map(stx-lexsort-to-sig)> lexsortnames
        ; signatures := <filter(stx-section-to-ctors); flatten-list-once> sections
 
-
+  // stx-collect-sorts :: SDF3.GeneralProduction -> SDF3.Sort
   stx-collect-sorts =
        ?DeclSort(<id>)
     <+ ?TemplateProduction(SortDef(s),_,Attrs(<not(fetch-elem(?Reject()))>)); !s
@@ -63,12 +68,21 @@ rules
     <+ ?DeclSort(<id>)
   
   // stx-cfsort-to-sig :: SDF3.Sort -> Statix.SortDecl  
-  stx-cfsort-to-sig = !SortDecl(<stx-escape-sortname>)
+  stx-cfsort-to-sig = !SortDecl(<id>)
   
   // stx-lexsort-to-sig :: SDF3.Sort -> Statix.SortDecl
-  stx-lexsort-to-sig = !SortAlias(<stx-escape-sortname>, StringSort())
+  stx-lexsort-to-sig = !SortAlias(<id>, StringSort())
   
-  stx-escape-sortname = id
+  // stx-to-str-import :: SDF3.ImpSection -> [Statix.Import]
+  stx-to-str-import(|ext, folder):
+    Imports(imports) -> <map(!Import(<stx-to-module-name(|ext, folder)>))> imports
+    
+  // stx-to-module-name(|string, string) :: SDF3.Import -> string
+  stx-to-module-name(|ext, folder):
+    Module(Unparameterized(m)) -> <conc-strings> (folder, "/" , m, ext)
+  
+  
+  // stx-section-to-ctors :: SDF3.Section -> [Statix.OpDecl]
   
   stx-section-to-ctors:
     SDFSection(ContextFreeSyntax(productions)) -> signatures
@@ -81,6 +95,9 @@ rules
   stx-section-to-ctors:
     SDFSection(Kernel(productions)) -> signatures
   with signatures := <filter(stx-cfg-production-to-cons-sig)> productions
+  
+  
+  // stx-cfg-production-to-cons-sig :: SDF3.SdfProduction -> Statix.OpDecl
   
   stx-cfg-production-to-cons-sig = fail
 
@@ -134,13 +151,11 @@ rules
        
   
   // stx-generate-injection-name :: (Statix.SortId, [Statix.Sort]) -> OpId
-  
   stx-generate-injection-name: (sortname, bodynames) -> <string-join(|"2")> [sortname, targetname]
   where targetname := <string-join(|"-")> bodynames
   
   
   // stx-cfg-sort-to-sig :: SDF3.SortSymbol -> Statix.SortRef
-  
   stx-cfg-sort-to-sig:
     Sort(name) -> SimpleSort(name)
   stx-cfg-sort-to-sig:
@@ -148,26 +163,24 @@ rules
     
     
   // stx-ignore-production :: [SDF3.Attribute] -> SDF3.Attribute
-  
   stx-ignore-production = fetch-elem(?Reject() + ?Bracket())
   
   
   // collect-all-concat<T>(? -> T) :: ? -> [T]
-  
   collect-all-concat(s) = collect-all(s, concatenate)
   
   
   // concatenate<T> :: ([T], [T]) -> [T]
-  
   concatenate: (l1, l2) -> <at-end(!l2)> l1
   
   
   // flatten-list-once<T> ::  [[T]] -> [T]
-  
   flatten-list-once = foldr(![], (is-list, id) < conc + MkCons)
   
   
   // string-join(|string) :: [string] -> string
-  
   string-join(|t) = separate-by(|t); concat-strings
+  
+  // flatmap(? -> [T]) :: [?] -> [T]
+  flatmap(s) = map(s); flatten-list-once
   
