@@ -47,8 +47,8 @@ rules
     	Imports(imports'),
     	Signature([Sorts(<concatenate> (lexsorts, cfsorts)), Constructors(signatures)])
     ])
-  with modname' := <conc-strings> ("statix-signatures/", modname, "-sig")
-     ; imports' := <flatmap(stx-to-str-import(|"-sig", "statix-signatures"))> imports
+  with modname' := <conc-strings> ("statix/signatures/", modname, "-sig")
+     ; imports' := <flatmap(stx-to-str-import(|"-sig", "statix/signatures"))> imports
      ; all-cfsortnames := <filter(not(?SDFSection(LexicalSyntax(_)))); collect-all(stx-collect-sorts)> sections
      ; all-lexsortnames := <filter(?SDFSection(LexicalSyntax(_))); collect-all(stx-collect-sorts)> sections
      ; lexsortnames := <isect> (all-cfsortnames, all-lexsortnames)      // only the lexical sort names that are used in the context-free rules
