@@ -65,7 +65,7 @@ rules
       <?Module(Unparameterized(mn), i*, _)> ast ;
       selected'     := <desugar-templates> selected;
       result   := <stx-generate-signatures; pp-statix-to-string  <+ !""; debug(!"The signature file could not be generated. Try Reset and Reanalyze or check for unresolved references.\n"); fail> selected'
-      ; filename := <create-src-gen(|project-path, "statix-signatures", "-sig.stx")> mn
+      ; filename := <create-src-gen(|project-path, "statix/signatures", "-sig.stx")> mn
    
   generate-statix-abstract:
     (selected, position, ast, path, project-path) -> (filename, result)
