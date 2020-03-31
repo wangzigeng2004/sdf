@@ -40,15 +40,16 @@ rules
   stx-generate-signatures = strip-annos; stx-module-to-sig
   
   stx-module-to-sig:
-    Module(Unparameterized(modname), imports, sections) -> Module(modname', [Signature([Sorts(sorts'), Constructors(signatures)])])
+    Module(Unparameterized(modname), imports, sections) -> Module(modname', [Signature([Sorts(<concatenate> (lexsorts, cfsorts)), Constructors(signatures)])])
     with modname'  := <conc-strings> ("statix-signatures/", modname, "-sig")
        ; imports' := <map(to-str-import(|"-sig", "statix-signatures"))> imports
-       ; sortnames := <filter(not(?SDFSection(LexicalSyntax(_)))); collect-all(stx-collect-sorts); nub> sections
-       ; sorts' := <map(stx-sort-to-sig)> sortnames
+       ; all-cfsortnames := <filter(not(?SDFSection(LexicalSyntax(_)))); collect-all(stx-collect-sorts)> sections
+       ; all-lexsortnames := <filter(?SDFSection(LexicalSyntax(_))); collect-all(stx-collect-sorts)> sections
+       ; lexsortnames := <isect> (all-cfsortnames, all-lexsortnames)		// only the lexical sort names that are used in the context-free rules
+       ; cfsortnames := <diff> (all-cfsortnames, all-lexsortnames)    	    // only the context-free sort names (those that are not lexical)
+       ; cfsorts := <map(stx-cfsort-to-sig)> cfsortnames
+       ; lexsorts := <map(stx-lexsort-to-sig)> lexsortnames
        ; signatures := <filter(stx-section-to-ctors); flatten-list-once> sections
-//      sorts* := <filter(not(?SDFSection(LexicalSyntax(_)))); collect-all(collect-sorts); nub; map(sort-to-ds-sig-sort)> s*;
-//      aliases* := <filter(section-to-ds-aliases)> section*;
-//      signatures* := <filter(section-to-ds-sig)> section*
 
 
   stx-collect-sorts =
@@ -60,8 +61,12 @@ rules
     <+ ?SdfProduction(Cf(SortDef(<id>)), _, _)
     <+ ?SdfProductionWithCons(SortCons(Cf(SortDef(<id>)), _), _, _)
     <+ ?DeclSort(<id>)
-    
-  stx-sort-to-sig = !SortDecl(<stx-escape-sortname>)
+  
+  // stx-cfsort-to-sig :: SDF3.Sort -> Statix.SortDecl  
+  stx-cfsort-to-sig = !SortDecl(<stx-escape-sortname>)
+  
+  // stx-lexsort-to-sig :: SDF3.Sort -> Statix.SortDecl
+  stx-lexsort-to-sig = !SortAlias(<stx-escape-sortname>, StringSort())
   
   stx-escape-sortname = id
   
