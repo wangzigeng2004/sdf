@@ -4,6 +4,7 @@ imports
   libstratego-sdf
   lib/EditorService
   lib/ds/pp/-
+  lib/statix/pp/-  
   libstratego-gpp
   lib/sdf-desugar
   lib/sdf-parenthesize
@@ -20,8 +21,10 @@ rules
   ast2box(|[<pp-table-sdf>, PP-Table([PP-Entry(Path1("Constructor"),[Arg("1")])])]);
   box2text-string(|80)
 
-  // TODO:
-  pp-statix-to-string = id
+  pp-statix-to-string =
+    statix-prettyprint-SDF-start-symbols
+    ; !V([], <id>)
+    ; box2text-string(|120)
 
   pp-ds-to-string =
     ds-prettyprint-SDF-start-symbols

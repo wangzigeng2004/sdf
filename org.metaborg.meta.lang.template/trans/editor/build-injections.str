@@ -32,5 +32,5 @@ rules
       <?Module(Unparameterized(mn), i*, _)> ast ;
       selected'     := <desugar-templates> selected;
       result   := <module-to-injections-str> selected';
-      filename := <create-src-gen(|project-path, "statix-signatures/ds", "-injections.str.aterm")> mn
+      filename := <create-src-gen(|project-path, "injections", "-injections.str.aterm")> mn
    

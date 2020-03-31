@@ -1,5 +1,41 @@
 module generation/injections/to-injections
 
+imports
+  libstratego-lib
+  libstrc
+  analysis/types
+  runtime/nabl/-
+  runtime/task/-
+  runtime/types/-  
+  generation/gen-utils/to-str
+  analysis/desugar
+
+imports
+  signatures/aliases/-
+  signatures/aterms/-
+  signatures/basic/-
+  signatures/characterclass/-
+  signatures/constants/-
+  signatures/grammar/-
+  signatures/kernel/-
+  signatures/labels/-
+  signatures/layout/-
+  signatures/layout-constraints/-
+  signatures/lifting/-
+  signatures/literals/-
+  signatures/modules/-
+  signatures/priority/-
+  signatures/regular/-
+  signatures/renaming/-
+  signatures/restrictions/-
+  signatures/sdf2-core/-
+  signatures/sorts/-
+  signatures/symbols/-
+  signatures/TemplateLang-sig
+  
 rules
 
-	module-to-injections-str = fail
+	module-to-injections-str:
+	    Module(Unparameterized(modname), import*, section*) -> Module(modname',  [])
+	  with
+	    modname'    := <conc-strings> ("injections/", modname, "-injections")
