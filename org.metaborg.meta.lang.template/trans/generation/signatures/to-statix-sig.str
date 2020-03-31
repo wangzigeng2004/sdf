@@ -57,6 +57,7 @@ rules
      ; lexsorts := <map(stx-lexsort-to-sig)> lexsortnames
      ; signatures := <filter(stx-section-to-ctors); flatten-list-once> sections
 
+rules
 
   // stx-collect-sorts :: SDF3.GeneralProduction -> SDF3.Sort
   stx-collect-sorts =
@@ -172,6 +173,8 @@ rules
   // stx-ignore-production :: [SDF3.Attribute] -> SDF3.Attribute
   stx-ignore-production = fetch-elem(?Reject() + ?Bracket())
 
+
+rules
 
   // collect-all-concat<T>(? -> T) :: ? -> [T]
   collect-all-concat(s) = collect-all(s, concatenate)

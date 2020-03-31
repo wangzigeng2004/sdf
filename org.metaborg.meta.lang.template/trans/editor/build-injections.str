@@ -19,7 +19,7 @@ rules
     where
       <?Module(Unparameterized(mn), i*, _)> ast ;
       selected'     := <desugar-templates> selected;
-      result   := <module-to-injections-str; pp-stratego-string  <+ !""; debug(!"The injection strategy file could not be generated. Try Reset and Reanalyze or check for unresolved references.\n"); fail> selected'
+      result   := <str-generate-injections; pp-stratego-string  <+ !""; debug(!"The injection strategy file could not be generated. Try Reset and Reanalyze or check for unresolved references.\n"); fail> selected'
       ; filename := <create-src-gen(|project-path, "injections", "-injections.str")> mn
    
   generate-injections-abstract:
@@ -31,6 +31,6 @@ rules
     where
       <?Module(Unparameterized(mn), i*, _)> ast ;
       selected'     := <desugar-templates> selected;
-      result   := <module-to-injections-str> selected';
+      result   := <str-generate-injections> selected';
       filename := <create-src-gen(|project-path, "injections", "-injections.str.aterm")> mn
    

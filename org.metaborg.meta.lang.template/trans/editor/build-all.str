@@ -66,7 +66,7 @@ rules
       statix-sig-filename  := <create-src-gen(|project-path, "statix/signatures", "-sig.stx")> mn;
       <write-string-to-file> (statix-sig-filename, statix-sig-ast)
     where
-      statix-inj-ast       := <module-to-injections-str; pp-stratego-string  <+ !""; debug(!"The injection strategy file could not be generated. Try Reset and Reanalyze or check for unresolved references.\n"); fail> ast';
+      statix-inj-ast       := <str-generate-injections; pp-stratego-string  <+ !""; debug(!"The injection strategy file could not be generated. Try Reset and Reanalyze or check for unresolved references.\n"); fail> ast';
       statix-inj-filename  := <create-src-gen(|project-path, "injections", "-injections.str")> mn;
       <write-string-to-file> (statix-inj-filename, statix-inj-ast)
     where
