@@ -52,6 +52,8 @@ menus
     submenu: "Signature"
       action: "Generate Signature (abstract)"         = generate-sig-abstract (meta)
       action: "Generate Signature (concrete)"         = generate-sig-concrete
+      action: "Generate Statix Signatures (abstract)" = generate-statix-abstract (meta)
+      action: "Generate Statix Signatures"            = generate-statix
       action: "Generate DynSem Signatures (abstract)" = generate-dynsem-abstract (meta)
       action: "Generate DynSem Signatures"            = generate-dynsem
     end
@@ -60,6 +62,11 @@ menus
       action: "Generate Stratego expansions"          = generate-new-completions-stratego 
       action: "Generate SDF3 insertions"              = generate-sdf-completions-concrete
       action: "Generate ESV colorer"                  = generate-new-completions-colorer
+    end
+        
+    submenu: "Injection"
+      action: "Generate Injection Strategies"            = generate-injections
+      action: "Generate Injection Strategies (abstract)" = generate-injections-abstract (meta)
     end
     
     action: "Generate PP (abstract)" = generate-pp-abstract (meta)

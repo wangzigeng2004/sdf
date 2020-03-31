@@ -1,0 +1,5 @@
+module generation/signatures/to-statix-sig
+
+rules
+  
+  module-to-statix-sig = fail
