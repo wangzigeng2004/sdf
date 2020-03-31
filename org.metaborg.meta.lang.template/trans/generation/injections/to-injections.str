@@ -1,0 +1,5 @@
+module generation/injections/to-injections
+
+rules
+
+	module-to-injections-str = fail

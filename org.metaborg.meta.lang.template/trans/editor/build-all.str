@@ -49,8 +49,8 @@ rules
       ast'     := <desugar-templates> ast;
       <?Module(Unparameterized(mn), i*, sections)> ast
     where
-      esv-cc-filename         := <create-src-gen(|project-path, "completion/colorer" ,"-cc-esv.esv")> mn;
-      esv-cc-ast              := <module-to-cmp-colorer; pp-esv-to-string <+ !""; debug(!"ESV files could not be generated. Try Reset and Reanalyze or check for unresolved references.\n"); fail> ast';
+      esv-cc-filename      := <create-src-gen(|project-path, "completion/colorer" ,"-cc-esv.esv")> mn;
+      esv-cc-ast           := <module-to-cmp-colorer; pp-esv-to-string <+ !""; debug(!"ESV files could not be generated. Try Reset and Reanalyze or check for unresolved references.\n"); fail> ast';
       <write-string-to-file> (esv-cc-filename, esv-cc-ast)   
     where
       ncp-ast              := <module-to-new-cmp; pp-stratego-string <+ !""; debug(!"New Completions files could not be generated. Try Reset and Reanalyze or check for unresolved references.\n"); fail> ast';
@@ -60,6 +60,10 @@ rules
       sig-ast              := <module-to-sig; pp-stratego-string <+ !""; debug(!"Signature files could not be generated. Try Reset and Reanalyze or check for unresolved references.\n"); fail> ast';
       sig-filename         := <create-src-gen(|project-path, "signatures", "-sig.str")> mn;
       <write-string-to-file> (sig-filename, sig-ast)
+    where
+      statix-sig-ast       := <module-to-statix-sig; pp-statix-to-string  <+ !""; debug(!"The Statix signature file could not be generated. Try Reset and Reanalyze or check for unresolved references.\n"); fail> ast';
+      statix-sig-filename  := <create-src-gen(|project-path, "statix-signatures", "-sig.stx")> mn;
+      <write-string-to-file> (statix-sig-filename, statix-sig-ast)
     where
       ds-sig-ast           := <module-to-ds-sig; pp-ds-to-string  <+ !""; debug(!"The ds signature file could not be generated. Try Reset and Reanalyze or check for unresolved references.\n"); fail> ast';
       ds-sig-filename      := <create-src-gen(|project-path, "ds-signatures", "-sig.ds")> mn;

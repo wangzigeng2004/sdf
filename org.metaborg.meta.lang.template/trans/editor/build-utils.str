@@ -20,6 +20,8 @@ rules
   ast2box(|[<pp-table-sdf>, PP-Table([PP-Entry(Path1("Constructor"),[Arg("1")])])]);
   box2text-string(|80)
 
+  // TODO:
+  pp-statix-to-string = id
 
   pp-ds-to-string =
     ds-prettyprint-SDF-start-symbols

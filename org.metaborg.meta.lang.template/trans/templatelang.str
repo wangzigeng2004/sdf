@@ -27,6 +27,7 @@ imports
   editor/build-all
   editor/build-completions
   editor/build-format
+  editor/build-injections
   editor/build-pp
   editor/build-sig
   editor/build-syntax
@@ -37,6 +38,7 @@ imports
   generation/completion/-
   generation/pp/-
   generation/signatures/-
+  generation/injections/-
   generation/syntax/-
   generation/textmate/-
 
