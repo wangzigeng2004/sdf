@@ -102,7 +102,7 @@ rules
 
   // str-inj-to-sig :: (SDF3.Sort, SDF3.RHS + SDF3.Template) -> Stratego.?
   str-inj-to-sig: (sortname, body) -> OpDecl(consname, FunType(body', ConstType(SortNoArgs(sortname))))
-  with body' := <collect-all-concat(stx-cfg-sort-to-sig)> body
+  with body' := <collect-om-concat(stx-cfg-sort-to-sig)> body
      ; consname := <stx-generate-injection-name> (sortname, <collect-all-concat(is-string)> body')
 
   // str-cfg-sort-to-sig :: SDF3.SortSymbol -> Stratego.?
@@ -188,7 +188,7 @@ rules
           , BA(CallNoArgs(SVar($[is-[lang]-[tosortname]])), Var("t"))
           )
         )
-  with consname := <stx-generate-injection-name> (sortname, <collect-all-concat(stx-cfg-sort-to-sig; is-string)> body)
+  with consname := <stx-generate-injection-name> (sortname, <collect-om-concat(stx-cfg-sort-to-sig; is-string)> body)
 
 
   // str-cons-to-explication-rule :: (SDF3.Sort, SDF3.IdCon, SDF3.RHS + SDF3.Template) -> Stratego.?
@@ -198,7 +198,7 @@ rules
   , NoAnnoList(Op(consname, ops))
   ))
   with <reset-counter> "injections"
-     ; args := <collect-all-concat(str-sort-with-name)> body
+     ; args := <collect-om-concat(str-sort-with-name)> body
      ; vars := <map(str-sort-to-var)> args
      ; ops := <map(str-sort-to-explication(|lang))> args
      
