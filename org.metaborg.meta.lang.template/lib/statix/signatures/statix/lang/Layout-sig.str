@@ -1,0 +1,11 @@
+module statix/signatures/statix/lang/Layout-sig
+
+signature
+  constructors
+     : String -> EOF
+     : String -> LineComment
+     : String -> BlockComment
+     : String -> CommentText
+     : String -> CommentChar
+     : String -> CommentSlash
+     : String -> CommentAsterisk

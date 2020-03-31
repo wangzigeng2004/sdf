@@ -1,0 +1,22 @@
+module statix/signatures/StatixLang-sig
+
+imports
+  statix/signatures/statix/lang/Layout-sig
+  statix/signatures/statix/lang/Common-sig
+  statix/signatures/statix/lang/Core-sig
+  statix/signatures/statix/lang/Sugar-sig
+  statix/signatures/statix/lang/Deprecated-sig
+  statix/signatures/statix/test/Test-sig
+  statix/signatures/statix/cli/CLI-sig
+
+
+signature
+  constructors
+                 : Module -> Start
+                 : Test -> Start
+    Module-Plhdr : Module
+    Start-Plhdr  : Start
+    Test-Plhdr   : Test
+    Module-Plhdr : COMPLETION-INSERTION -> Module
+    Start-Plhdr  : COMPLETION-INSERTION -> Start
+    Test-Plhdr   : COMPLETION-INSERTION -> Test

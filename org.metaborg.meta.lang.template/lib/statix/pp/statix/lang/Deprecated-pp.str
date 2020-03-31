@@ -1,0 +1,529 @@
+module statix/pp/statix/lang/Deprecated-pp
+
+imports
+  libstratego-gpp
+  libspoofax/sdf/pp
+  libspoofax/term/origin
+  libstratego-sglr
+  statix/signatures/statix/lang/Deprecated-sig
+
+
+imports
+  statix/signatures/statix/lang/Common-sig
+  statix/signatures/statix/lang/Core-sig
+
+
+imports
+  statix/pp/statix/lang/Common-pp
+  statix/pp/statix/lang/Core-pp
+
+
+strategies
+  prettyprint-example =
+    prettyprint-Statix
+
+  prettyprint-Statix =
+    fail
+
+  prettyprint-Statix(|sort) =
+    fail
+
+
+strategies
+  prettyprint-SDF-start-symbols =
+    prettyprint-Statix-start-symbols
+
+  prettyprint-Statix-start-symbols =
+    fail
+
+
+strategies
+  prettyprint-Statix =
+    prettyprint-Statix-QueryFilter
+
+  prettyprint-Statix =
+    prettyprint-Statix-QueryMin
+
+  prettyprint-Statix =
+    prettyprint-Statix-NamespaceFilter
+
+  prettyprint-Statix =
+    prettyprint-Statix-NamespaceMin
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-QueryFilter>
+    where <?"QueryFilter"> sort
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-QueryMin>
+    where <?"QueryMin"> sort
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-NamespaceFilter>
+    where <?"NamespaceFilter"> sort
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-NamespaceMin>
+    where <?"NamespaceMin"> sort
+
+  prettyprint-Statix-QueryFilter :
+    Filter_dep(t1__) -> [ H(
+                            [SOpt(HS(), "0")]
+                          , [ S(" filter pathMatch[")
+                            , t1__'
+                            , S("]")
+                            ]
+                          )
+                        ]
+    with t1__' := <pp-one-Z(prettyprint-Statix-LabelRE) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-Statix-QueryFilter =
+    ?Filter_dep(_)
+
+  Statix-get-indent :
+    (t@Filter_dep(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"QueryFilter"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    (t@Filter_dep(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"QueryFilter"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    (t@Filter_dep(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"QueryFilter"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statix-QueryMin :
+    Min_dep(t1__) -> [ H(
+                         [SOpt(HS(), "0")]
+                       , [ S(" min pathLt[")
+                         , t1__'
+                         , S("]")
+                         ]
+                       )
+                     ]
+    with t1__' := <pp-one-Z(prettyprint-Statix-LabelPairs) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-Statix-QueryMin =
+    ?Min_dep(_)
+
+  Statix-get-indent :
+    (t@Min_dep(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"QueryMin"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    (t@Min_dep(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"QueryMin"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    (t@Min_dep(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"QueryMin"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statix-QueryFilter :
+    Filter_dep(t1__, t2__) -> [ H(
+                                  [SOpt(HS(), "0")]
+                                , [ S(" filter pathMatch[")
+                                  , t1__'
+                                  , S("] and ")
+                                  , t2__'
+                                  ]
+                                )
+                              ]
+    with t1__' := <pp-one-Z(prettyprint-Statix-LabelRE) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-Statix-HoConstraint) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+
+  is-Statix-QueryFilter =
+    ?Filter_dep(_, _)
+
+  Statix-get-indent :
+    (t@Filter_dep(t1__, t2__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"QueryFilter"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    (t@Filter_dep(t1__, t2__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"QueryFilter"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    (t@Filter_dep(t1__, t2__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"QueryFilter"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statix-QueryMin :
+    Min_dep(t1__, t2__) -> [ H(
+                               [SOpt(HS(), "0")]
+                             , [ S(" min pathLt[")
+                               , t1__'
+                               , S("] and ")
+                               , t2__'
+                               ]
+                             )
+                           ]
+    with t1__' := <pp-one-Z(prettyprint-Statix-LabelPairs) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-Statix-HoConstraint) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+
+  is-Statix-QueryMin =
+    ?Min_dep(_, _)
+
+  Statix-get-indent :
+    (t@Min_dep(t1__, t2__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"QueryMin"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    (t@Min_dep(t1__, t2__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"QueryMin"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    (t@Min_dep(t1__, t2__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"QueryMin"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statix-NamespaceFilter :
+    NamespaceFilter_dep(t1__) -> [ H(
+                                     [SOpt(HS(), "0")]
+                                   , [ S(" filter pathMatch[")
+                                     , t1__'
+                                     , S("]")
+                                     ]
+                                   )
+                                 ]
+    with t1__' := <pp-one-Z(prettyprint-Statix-LabelRE) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-Statix-NamespaceFilter =
+    ?NamespaceFilter_dep(_)
+
+  Statix-get-indent :
+    (t@NamespaceFilter_dep(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"NamespaceFilter"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    (t@NamespaceFilter_dep(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"NamespaceFilter"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    (t@NamespaceFilter_dep(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"NamespaceFilter"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statix-NamespaceMin :
+    NamespaceMin_dep(t1__) -> [ H(
+                                  [SOpt(HS(), "0")]
+                                , [ S(" min pathLt[")
+                                  , t1__'
+                                  , S("]")
+                                  ]
+                                )
+                              ]
+    with t1__' := <pp-one-Z(prettyprint-Statix-LabelPairs) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-Statix-NamespaceMin =
+    ?NamespaceMin_dep(_)
+
+  Statix-get-indent :
+    (t@NamespaceMin_dep(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"NamespaceMin"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    (t@NamespaceMin_dep(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"NamespaceMin"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    (t@NamespaceMin_dep(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"NamespaceMin"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  is-Statix-QueryFilter =
+    fail
+
+  is-Statix-QueryMin =
+    fail
+
+  is-Statix-NamespaceFilter =
+    fail
+
+  is-Statix-NamespaceMin =
+    fail
+
+  prettyprint-Statix-QueryFilter :
+    amb([h|hs]) -> <prettyprint-Statix-QueryFilter> h
+
+  prettyprint-Statix-QueryMin :
+    amb([h|hs]) -> <prettyprint-Statix-QueryMin> h
+
+  prettyprint-Statix-NamespaceFilter :
+    amb([h|hs]) -> <prettyprint-Statix-NamespaceFilter> h
+
+  prettyprint-Statix-NamespaceMin :
+    amb([h|hs]) -> <prettyprint-Statix-NamespaceMin> h
+
+  prettyprint-Statix-QueryFilter :
+    QueryFilter-Plhdr() -> [ H(
+                               [SOpt(HS(), "0")]
+                             , [S("$QueryFilter")]
+                             )
+                           ]
+
+  is-Statix-QueryFilter =
+    ?QueryFilter-Plhdr()
+
+  prettyprint-Statix-QueryMin :
+    QueryMin-Plhdr() -> [ H(
+                            [SOpt(HS(), "0")]
+                          , [S("$QueryMin")]
+                          )
+                        ]
+
+  is-Statix-QueryMin =
+    ?QueryMin-Plhdr()
+
+  prettyprint-Statix-HoConstraint :
+    HoConstraint-Plhdr() -> [ H(
+                                [SOpt(HS(), "0")]
+                              , [S("$HoConstraint")]
+                              )
+                            ]
+
+  is-Statix-HoConstraint =
+    ?HoConstraint-Plhdr()
+
+  prettyprint-Statix-NamespaceFilter :
+    NamespaceFilter-Plhdr() -> [ H(
+                                   [SOpt(HS(), "0")]
+                                 , [S("$NamespaceFilter")]
+                                 )
+                               ]
+
+  is-Statix-NamespaceFilter =
+    ?NamespaceFilter-Plhdr()
+
+  prettyprint-Statix-LabelRE :
+    LabelRE-Plhdr() -> [ H(
+                           [SOpt(HS(), "0")]
+                         , [S("$LabelRE")]
+                         )
+                       ]
+
+  is-Statix-LabelRE =
+    ?LabelRE-Plhdr()
+
+  prettyprint-Statix-NamespaceMin :
+    NamespaceMin-Plhdr() -> [ H(
+                                [SOpt(HS(), "0")]
+                              , [S("$NamespaceMin")]
+                              )
+                            ]
+
+  is-Statix-NamespaceMin =
+    ?NamespaceMin-Plhdr()
+
+  prettyprint-Statix-LabelPairs :
+    LabelPairs-Plhdr() -> [ H(
+                              [SOpt(HS(), "0")]
+                            , [S("$LabelPairs")]
+                            )
+                          ]
+
+  is-Statix-LabelPairs =
+    ?LabelPairs-Plhdr()
+
+  prettyprint-Statix-QueryFilter :
+    QueryFilter-Plhdr(_) -> [ H(
+                                [SOpt(HS(), "0")]
+                              , [S("$QueryFilter")]
+                              )
+                            ]
+
+  is-Statix-QueryFilter =
+    ?QueryFilter-Plhdr(_)
+
+  prettyprint-Statix-QueryMin :
+    QueryMin-Plhdr(_) -> [ H(
+                             [SOpt(HS(), "0")]
+                           , [S("$QueryMin")]
+                           )
+                         ]
+
+  is-Statix-QueryMin =
+    ?QueryMin-Plhdr(_)
+
+  prettyprint-Statix-HoConstraint :
+    HoConstraint-Plhdr(_) -> [ H(
+                                 [SOpt(HS(), "0")]
+                               , [S("$HoConstraint")]
+                               )
+                             ]
+
+  is-Statix-HoConstraint =
+    ?HoConstraint-Plhdr(_)
+
+  prettyprint-Statix-NamespaceFilter :
+    NamespaceFilter-Plhdr(_) -> [ H(
+                                    [SOpt(HS(), "0")]
+                                  , [S("$NamespaceFilter")]
+                                  )
+                                ]
+
+  is-Statix-NamespaceFilter =
+    ?NamespaceFilter-Plhdr(_)
+
+  prettyprint-Statix-LabelRE :
+    LabelRE-Plhdr(_) -> [ H(
+                            [SOpt(HS(), "0")]
+                          , [S("$LabelRE")]
+                          )
+                        ]
+
+  is-Statix-LabelRE =
+    ?LabelRE-Plhdr(_)
+
+  prettyprint-Statix-NamespaceMin :
+    NamespaceMin-Plhdr(_) -> [ H(
+                                 [SOpt(HS(), "0")]
+                               , [S("$NamespaceMin")]
+                               )
+                             ]
+
+  is-Statix-NamespaceMin =
+    ?NamespaceMin-Plhdr(_)
+
+  prettyprint-Statix-LabelPairs :
+    LabelPairs-Plhdr(_) -> [ H(
+                               [SOpt(HS(), "0")]
+                             , [S("$LabelPairs")]
+                             )
+                           ]
+
+  is-Statix-LabelPairs =
+    ?LabelPairs-Plhdr(_)

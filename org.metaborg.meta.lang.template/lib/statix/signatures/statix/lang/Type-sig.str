@@ -1,0 +1,117 @@
+module statix/signatures/statix/lang/Type-sig
+
+imports
+  statix/signatures/statix/lang/Common-sig
+  statix/signatures/statix/lang/Core-sig
+
+
+signature
+  sorts
+    IType TType
+
+  sorts
+    ExtOrigin
+
+  constructors
+    PRED                      : TTypes -> IType
+    FUN                       : TTypes * TType -> IType
+    NS                        : TTypes -> IType
+    OP                        : TTypes * TType -> IType
+                              : List(TType) -> TTypes
+    SORT                      : NaBL2Occurrence -> TType
+    INT                       : TType
+    STRING                    : TType
+    PATH                      : TType
+    LABEL                     : TType
+    OCCURRENCE                : TType
+    AST_ID                    : TType
+    SCOPE                     : TType
+    LIST                      : TType -> TType
+    TUPLE                     : TTypes -> TType
+    IType-Plhdr               : IType
+    NaBL2Occurrence-Plhdr     : NaBL2Occurrence
+    TType-Plhdr               : TType
+    TTypes-Plhdr              : TTypes
+    IType-Plhdr               : COMPLETION-INSERTION -> IType
+    NaBL2Occurrence-Plhdr     : COMPLETION-INSERTION -> NaBL2Occurrence
+    TType-Plhdr               : COMPLETION-INSERTION -> TType
+    TTypes-Plhdr              : COMPLETION-INSERTION -> TTypes
+    TType-Opt-Plhdr           : TType
+                              : List(ExtConstraint) -> ExtConstraints
+    ExtProvides               : ExtSet * ExtSet * ExtOrigin -> ExtConstraint
+    ExtRequires               : ExtSet * ExtSet * ExtOrigin -> ExtConstraint
+    ExtIsCovered              : ExtSet * ExtOrigin -> ExtConstraint
+    ExtBarrier                : ExtBarrier -> ExtConstraint
+    ExtProvidesEsc            : ExtSet * ExtSet * ExtOrigin -> ExtConstraint
+    ExtRequiresEsc            : ExtSet * ExtSet * ExtOrigin -> ExtConstraint
+                              : List(ExtSet) -> ExtSets
+    ExtParam                  : ExtId * Int -> ExtSet
+    ExtVar                    : ExtId -> ExtSet
+    ExtLit                    : List(ExtLabel) -> ExtSet
+    ExtAll                    : ExtSet
+    ExtNone                   : ExtSet
+                              : List(ExtBarrier) -> ExtBarriers
+    ExtTerm                   : ID * NaBL2TermIndex -> ExtBarrier
+                              : NaBL2Scope -> ExtBarrier
+    ExtRef                    : NaBL2Occurrence -> ExtId
+    ExtDecl                   : NaBL2Occurrence -> ExtId
+                              : RelRef -> ExtLabel
+                              : EdgeRef -> ExtLabel
+                              : List(ExtEq) -> ExtEqs
+                              : ExtSet * ExtOp -> ExtEq
+    Union                     : List(ExtOp) -> ExtOp
+    Intersection              : List(ExtOp) -> ExtOp
+                              : ExtSet -> ExtOp
+    ExtConstraints-Plhdr      : ExtConstraints
+    ExtConstraint-Plhdr       : ExtConstraint
+    ExtOrigin-Plhdr           : ExtOrigin
+    ExtSets-Plhdr             : ExtSets
+    Int-Plhdr                 : Int
+    ExtBarriers-Plhdr         : ExtBarriers
+    ID-Plhdr                  : ID
+    NaBL2TermIndex-Plhdr      : NaBL2TermIndex
+    ExtBarrier-Plhdr          : ExtBarrier
+    NaBL2Scope-Plhdr          : NaBL2Scope
+    ExtId-Plhdr               : ExtId
+    NaBL2Occurrence-Plhdr     : NaBL2Occurrence
+    RelRef-Plhdr              : RelRef
+    ExtLabel-Plhdr            : ExtLabel
+    EdgeRef-Plhdr             : EdgeRef
+    ExtEqs-Plhdr              : ExtEqs
+    ExtEq-Plhdr               : ExtEq
+    ExtOp-Plhdr               : ExtOp
+    ExtSet-Plhdr              : ExtSet
+    ExtConstraints-Plhdr      : COMPLETION-INSERTION -> ExtConstraints
+    ExtConstraint-Plhdr       : COMPLETION-INSERTION -> ExtConstraint
+    ExtOrigin-Plhdr           : COMPLETION-INSERTION -> ExtOrigin
+    ExtSets-Plhdr             : COMPLETION-INSERTION -> ExtSets
+    Int-Plhdr                 : COMPLETION-INSERTION -> Int
+    ExtBarriers-Plhdr         : COMPLETION-INSERTION -> ExtBarriers
+    ID-Plhdr                  : COMPLETION-INSERTION -> ID
+    NaBL2TermIndex-Plhdr      : COMPLETION-INSERTION -> NaBL2TermIndex
+    ExtBarrier-Plhdr          : COMPLETION-INSERTION -> ExtBarrier
+    NaBL2Scope-Plhdr          : COMPLETION-INSERTION -> NaBL2Scope
+    ExtId-Plhdr               : COMPLETION-INSERTION -> ExtId
+    NaBL2Occurrence-Plhdr     : COMPLETION-INSERTION -> NaBL2Occurrence
+    RelRef-Plhdr              : COMPLETION-INSERTION -> RelRef
+    ExtLabel-Plhdr            : COMPLETION-INSERTION -> ExtLabel
+    EdgeRef-Plhdr             : COMPLETION-INSERTION -> EdgeRef
+    ExtEqs-Plhdr              : COMPLETION-INSERTION -> ExtEqs
+    ExtEq-Plhdr               : COMPLETION-INSERTION -> ExtEq
+    ExtOp-Plhdr               : COMPLETION-INSERTION -> ExtOp
+    ExtSet-Plhdr              : COMPLETION-INSERTION -> ExtSet
+    ExtConstraint-Opt-Plhdr   : ExtConstraint
+    ExtSet-Opt-Plhdr          : ExtSet
+    ExtLabel-Opt-Plhdr        : ExtLabel
+    ExtBarrier-Opt-Plhdr      : ExtBarrier
+    ExtEq-Opt-Plhdr           : ExtEq
+    ExtOp-Opt-Plhdr           : ExtOp
+    DistinctPatterns          : List(NaBL2Occurrence) -> PatternConstraint
+    NoDuplicatePatterns       : List(NaBL2Occurrence) * List(NaBL2Occurrence) * ExtOrigin -> PatternConstraint
+    PatternConstraint-Plhdr   : PatternConstraint
+    NaBL2Occurrence-Plhdr     : NaBL2Occurrence
+    ExtOrigin-Plhdr           : ExtOrigin
+    PatternConstraint-Plhdr   : COMPLETION-INSERTION -> PatternConstraint
+    NaBL2Occurrence-Plhdr     : COMPLETION-INSERTION -> NaBL2Occurrence
+    ExtOrigin-Plhdr           : COMPLETION-INSERTION -> ExtOrigin
+    NaBL2Occurrence-Opt-Plhdr : NaBL2Occurrence

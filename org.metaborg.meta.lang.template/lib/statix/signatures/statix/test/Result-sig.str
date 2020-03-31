@@ -1,0 +1,74 @@
+module statix/signatures/statix/test/Result-sig
+
+imports
+  statix/signatures/statix/lang/Layout-sig
+  statix/signatures/statix/lang/Common-sig
+  statix/signatures/statix/lang/Core-sig
+  statix/signatures/statix/lang/Sugar-sig
+  statix/signatures/statix/lang/Deprecated-sig
+
+
+signature
+  constructors
+    EvalResult              : Solution * List(EditorMessage) * List(EditorMessage) * List(EditorMessage) -> TestResult
+    Solution                : List(SubstEntry) * Analysis -> Solution
+    TestResult-Plhdr        : TestResult
+    EditorMessage-Plhdr     : EditorMessage
+    Solution-Plhdr          : Solution
+    SubstEntry-Plhdr        : SubstEntry
+    Analysis-Plhdr          : Analysis
+    TestResult-Plhdr        : COMPLETION-INSERTION -> TestResult
+    EditorMessage-Plhdr     : COMPLETION-INSERTION -> EditorMessage
+    Solution-Plhdr          : COMPLETION-INSERTION -> Solution
+    SubstEntry-Plhdr        : COMPLETION-INSERTION -> SubstEntry
+    Analysis-Plhdr          : COMPLETION-INSERTION -> Analysis
+    EditorMessage-Opt-Plhdr : EditorMessage
+    SubstEntry-Opt-Plhdr    : SubstEntry
+    Analysis                : ScopeGraph -> Analysis
+    Analysis-Plhdr          : Analysis
+    ScopeGraph-Plhdr        : ScopeGraph
+    Analysis-Plhdr          : COMPLETION-INSERTION -> Analysis
+    ScopeGraph-Plhdr        : COMPLETION-INSERTION -> ScopeGraph
+                            : Var * Term -> SubstEntry
+    SubstEntry-Plhdr        : SubstEntry
+    Var-Plhdr               : Var
+    Term-Plhdr              : Term
+    SubstEntry-Plhdr        : COMPLETION-INSERTION -> SubstEntry
+    Var-Plhdr               : COMPLETION-INSERTION -> Var
+    Term-Plhdr              : COMPLETION-INSERTION -> Term
+                            : List(ScopeEntry) -> ScopeGraph
+                            : Scope * List(DataEntry) * List(EdgeEntry) -> ScopeEntry
+                            : RelRef * EntryValues -> DataEntry
+                            : Label * EntryValues -> EdgeEntry
+                            : List(Term) -> EntryValues
+    ScopeGraph-Plhdr        : ScopeGraph
+    ScopeEntry-Plhdr        : ScopeEntry
+    Scope-Plhdr             : Scope
+    DataEntry-Plhdr         : DataEntry
+    RelRef-Plhdr            : RelRef
+    EdgeEntry-Plhdr         : EdgeEntry
+    Label-Plhdr             : Label
+    EntryValues-Plhdr       : EntryValues
+    Term-Plhdr              : Term
+    ScopeGraph-Plhdr        : COMPLETION-INSERTION -> ScopeGraph
+    ScopeEntry-Plhdr        : COMPLETION-INSERTION -> ScopeEntry
+    Scope-Plhdr             : COMPLETION-INSERTION -> Scope
+    DataEntry-Plhdr         : COMPLETION-INSERTION -> DataEntry
+    RelRef-Plhdr            : COMPLETION-INSERTION -> RelRef
+    EdgeEntry-Plhdr         : COMPLETION-INSERTION -> EdgeEntry
+    Label-Plhdr             : COMPLETION-INSERTION -> Label
+    EntryValues-Plhdr       : COMPLETION-INSERTION -> EntryValues
+    Term-Plhdr              : COMPLETION-INSERTION -> Term
+    ScopeEntry-Opt-Plhdr    : ScopeEntry
+    DataEntry-Opt-Plhdr     : DataEntry
+    EdgeEntry-Opt-Plhdr     : EdgeEntry
+    Term-Opt-Plhdr          : Term
+                            : MessagePos * String -> EditorMessage
+                            : MessagePos
+    EditorMessage-Plhdr     : EditorMessage
+    String-Plhdr            : String
+    MessagePos-Plhdr        : MessagePos
+    EditorMessage-Plhdr     : COMPLETION-INSERTION -> EditorMessage
+    String-Plhdr            : COMPLETION-INSERTION -> String
+    MessagePos-Plhdr        : COMPLETION-INSERTION -> MessagePos
+                            : String -> String

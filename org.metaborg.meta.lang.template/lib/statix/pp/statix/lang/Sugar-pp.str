@@ -1,0 +1,3453 @@
+module statix/pp/statix/lang/Sugar-pp
+
+imports
+  libstratego-gpp
+  libspoofax/sdf/pp
+  libspoofax/term/origin
+  libstratego-sglr
+  statix/signatures/statix/lang/Sugar-sig
+
+
+imports
+  statix/signatures/statix/lang/Common-sig
+  statix/signatures/statix/lang/Core-sig
+
+
+imports
+  statix/pp/statix/lang/Common-pp
+  statix/pp/statix/lang/Core-pp
+
+
+strategies
+  prettyprint-example =
+    prettyprint-Statix
+
+  prettyprint-Statix =
+    fail
+
+  prettyprint-Statix(|sort) =
+    fail
+
+
+strategies
+  prettyprint-SDF-start-symbols =
+    prettyprint-Statix-start-symbols
+
+  prettyprint-Statix-start-symbols =
+    fail
+
+
+strategies
+  prettyprint-Statix =
+    prettyprint-Statix-CDecl
+
+  prettyprint-Statix =
+    prettyprint-Statix-CDerive
+
+  prettyprint-Statix =
+    prettyprint-Statix-Lift
+
+  prettyprint-Statix =
+    prettyprint-Statix-Rule
+
+  prettyprint-Statix =
+    prettyprint-Statix-RuleHead
+
+  prettyprint-Statix =
+    prettyprint-Statix-HoConstraint
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-CDecl>
+    where <?"CDecl"> sort
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-CDerive>
+    where <?"CDerive"> sort
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-Lift>
+    where <?"Lift"> sort
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-Rule>
+    where <?"Rule"> sort
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-RuleHead>
+    where <?"RuleHead"> sort
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-HoConstraint>
+    where <?"HoConstraint"> sort
+
+  prettyprint-Statix-Rule :
+    t1__ -> [ H(
+                [SOpt(HS(), "0")]
+              , [S("constraint "), t1__']
+              )
+            ]
+    where not(is-Statix-Rule)
+    where t1__' := <pp-one-Z(prettyprint-Statix-CDerive) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  prettyprint-Statix-Rule :
+    t1__ -> [ H(
+                [SOpt(HS(), "0")]
+              , [t1__']
+              )
+            ]
+    where not(is-Statix-Rule)
+    where t1__' := <pp-one-Z(prettyprint-Statix-CDerive) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  prettyprint-Statix-Rule :
+    CDecl(t1__, t2__, t3__) -> [ H(
+                                   [SOpt(HS(), "0")]
+                                 , [ t1__'
+                                   , S("constraint ")
+                                   , t2__'
+                                   , S(" : ")
+                                   , t3__'
+                                   ]
+                                 )
+                               ]
+    with t1__' := <pp-one-Z(prettyprint-Statix-CInd) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-Statix-ConstraintId) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+    with t3__' := <pp-one-Z(prettyprint-Statix-Type) <+ pp-one-Z(prettyprint-completion-aux)> t3__
+
+  is-Statix-Rule =
+    ?CDecl(_, _, _)
+
+  Statix-get-indent :
+    ( t@CDecl(t1__, t2__, t3__)
+    , index
+    ) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Rule"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           case ?3 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    ( t@CDecl(t1__, t2__, t3__)
+    , index
+    ) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Rule"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           case ?3 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    ( t@CDecl(t1__, t2__, t3__)
+    , index
+    ) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Rule"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := " "
+           case ?3 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statix-Rule :
+    CDecl(t1__, t2__, t3__) -> [ H(
+                                   [SOpt(HS(), "0")]
+                                 , [t1__', t2__', S(" : "), t3__']
+                                 )
+                               ]
+    with t1__' := <pp-one-Z(prettyprint-Statix-CInd) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-Statix-ConstraintId) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+    with t3__' := <pp-one-Z(prettyprint-Statix-Type) <+ pp-one-Z(prettyprint-completion-aux)> t3__
+
+  is-Statix-Rule =
+    ?CDecl(_, _, _)
+
+  Statix-get-indent :
+    ( t@CDecl(t1__, t2__, t3__)
+    , index
+    ) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Rule"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           case ?3 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    ( t@CDecl(t1__, t2__, t3__)
+    , index
+    ) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Rule"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           case ?3 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    ( t@CDecl(t1__, t2__, t3__)
+    , index
+    ) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Rule"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := ""
+           case ?3 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statix-CDecl :
+    t1__ -> [ H(
+                [SOpt(HS(), "0")]
+              , [t1__']
+              )
+            ]
+    where not(is-Statix-CDecl)
+    where t1__' := <pp-one-Z(prettyprint-Statix-CDerive) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  prettyprint-Statix-CDerive :
+    CDeriveMap(t1__, t2__, t3__) -> [ H(
+                                        [SOpt(HS(), "0")]
+                                      , [ t1__'
+                                        , S(" maps ")
+                                        , t2__'
+                                        , S("(")
+                                        , t3__'
+                                        , S(")")
+                                        ]
+                                      )
+                                    ]
+    with t1__' := <pp-one-Z(prettyprint-Statix-ConstraintId) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-Statix-ConstraintId) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+    with t3__' := <pp-H-list(prettyprint-Statix-Lift|", ")
+                   <+ pp-one-Z(prettyprint-completion-aux)> t3__
+
+  is-Statix-CDerive =
+    ?CDeriveMap(_, _, _)
+
+  Statix-get-indent :
+    ( t@CDeriveMap(t1__, t2__, t3__)
+    , index
+    ) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"CDerive"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           case ?3 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    ( t@CDeriveMap(t1__, t2__, t3__)
+    , index
+    ) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"CDerive"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           case ?3 :
+             separator := ", "
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    ( t@CDeriveMap(t1__, t2__, t3__)
+    , index
+    ) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"CDerive"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := " "
+           case ?3 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statix-CDerive :
+    FDeriveMap(t1__, t2__, t3__, t4__) -> [ H(
+                                              [SOpt(HS(), "0")]
+                                            , [ t1__'
+                                              , S(" maps ")
+                                              , t2__'
+                                              , S("(")
+                                              , t3__'
+                                              , S(") = ")
+                                              , t4__'
+                                              ]
+                                            )
+                                          ]
+    with t1__' := <pp-one-Z(prettyprint-Statix-ConstraintId) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-Statix-ConstraintId) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+    with t3__' := <pp-H-list(prettyprint-Statix-Lift|", ")
+                   <+ pp-one-Z(prettyprint-completion-aux)> t3__
+    with t4__' := <pp-one-Z(prettyprint-Statix-Lift) <+ pp-one-Z(prettyprint-completion-aux)> t4__
+
+  is-Statix-CDerive =
+    ?FDeriveMap(_, _, _, _)
+
+  Statix-get-indent :
+    ( t@FDeriveMap(t1__, t2__, t3__, t4__)
+    , index
+    ) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"CDerive"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           case ?3 :
+             indent := ""
+           case ?4 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    ( t@FDeriveMap(t1__, t2__, t3__, t4__)
+    , index
+    ) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"CDerive"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           case ?3 :
+             separator := ", "
+           case ?4 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    ( t@FDeriveMap(t1__, t2__, t3__, t4__)
+    , index
+    ) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"CDerive"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := " "
+           case ?3 :
+             ws := ""
+           case ?4 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statix-Lift :
+    IdLift() -> [ H(
+                    [SOpt(HS(), "0")]
+                  , [S("*")]
+                  )
+                ]
+
+  is-Statix-Lift =
+    ?IdLift()
+
+  Statix-get-indent :
+    (t@IdLift(), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Lift"> sort
+    with switch !index
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    (t@IdLift(), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Lift"> sort
+    with switch !index
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    (t@IdLift(), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Lift"> sort
+    with switch !index
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statix-Lift :
+    ListLift() -> [ H(
+                      [SOpt(HS(), "0")]
+                    , [S("list(*)")]
+                    )
+                  ]
+
+  is-Statix-Lift =
+    ?ListLift()
+
+  Statix-get-indent :
+    (t@ListLift(), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Lift"> sort
+    with switch !index
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    (t@ListLift(), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Lift"> sort
+    with switch !index
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    (t@ListLift(), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Lift"> sort
+    with switch !index
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statix-Lift :
+    Tuple0Lift() -> [ H(
+                        [SOpt(HS(), "0")]
+                      , [S("( )")]
+                      )
+                    ]
+
+  is-Statix-Lift =
+    ?Tuple0Lift()
+
+  Statix-get-indent :
+    (t@Tuple0Lift(), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Lift"> sort
+    with switch !index
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    (t@Tuple0Lift(), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Lift"> sort
+    with switch !index
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    (t@Tuple0Lift(), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Lift"> sort
+    with switch !index
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statix-Lift :
+    TupleNLift(t1__, t2__) -> [ H(
+                                  [SOpt(HS(), "0")]
+                                , [ S("(")
+                                  , t1__'
+                                  , S(", ")
+                                  , t2__'
+                                  , S(")")
+                                  ]
+                                )
+                              ]
+    with t1__' := <pp-one-Z(prettyprint-Statix-Lift) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-H-list(prettyprint-Statix-Lift|", ")
+                   <+ pp-one-Z(prettyprint-completion-aux)> t2__
+
+  is-Statix-Lift =
+    ?TupleNLift(_, _)
+
+  Statix-get-indent :
+    (t@TupleNLift(t1__, t2__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Lift"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    (t@TupleNLift(t1__, t2__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Lift"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ", "
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    (t@TupleNLift(t1__, t2__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Lift"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statix-Rule :
+    AxiomRule(t1__, t2__) -> [ H(
+                                 [SOpt(HS(), "0")]
+                               , [t1__', t2__', S(".")]
+                               )
+                             ]
+    with t1__' := <pp-one-Z(prettyprint-Statix-RuleName) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-Statix-RuleHead) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+
+  is-Statix-Rule =
+    ?AxiomRule(_, _)
+
+  Statix-get-indent :
+    (t@AxiomRule(t1__, t2__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Rule"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    (t@AxiomRule(t1__, t2__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Rule"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    (t@AxiomRule(t1__, t2__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Rule"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statix-RuleHead :
+    F(t1__, t2__, t3__) -> [ H(
+                               [SOpt(HS(), "0")]
+                             , [ t1__'
+                               , S("(")
+                               , t2__'
+                               , S(") = ")
+                               , t3__'
+                               ]
+                             )
+                           ]
+    with t1__' := <pp-one-Z(prettyprint-Statix-ConstraintId) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-H-list(prettyprint-Statix-Term|", ")
+                   <+ pp-one-Z(prettyprint-completion-aux)> t2__
+    with t3__' := <pp-one-Z(prettyprint-Statix-Term) <+ pp-one-Z(prettyprint-completion-aux)> t3__
+
+  is-Statix-RuleHead =
+    ?F(_, _, _)
+
+  Statix-get-indent :
+    ( t@F(t1__, t2__, t3__)
+    , index
+    ) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"RuleHead"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           case ?3 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    ( t@F(t1__, t2__, t3__)
+    , index
+    ) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"RuleHead"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ", "
+           case ?3 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    ( t@F(t1__, t2__, t3__)
+    , index
+    ) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"RuleHead"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := ""
+           case ?3 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statix-HoConstraint :
+    LLam(t1__) -> [ H(
+                      [SOpt(HS(), "0")]
+                    , [ S("{ ")
+                      , t1__'
+                      , S(" }")
+                      ]
+                    )
+                  ]
+    with t1__' := <pp-H-list(prettyprint-Statix-Term|", ")
+                   <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-Statix-HoConstraint =
+    ?LLam(_)
+
+  Statix-get-indent :
+    (t@LLam(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"HoConstraint"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    (t@LLam(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"HoConstraint"> sort
+    with switch !index
+           case ?1 :
+             separator := ", "
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    (t@LLam(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"HoConstraint"> sort
+    with switch !index
+           case ?1 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statix-HoConstraint :
+    LC(t1__) -> [ H(
+                    [SOpt(HS(), "0")]
+                  , [t1__']
+                  )
+                ]
+    with t1__' := <pp-one-Z(prettyprint-Statix-ConstraintId) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-Statix-HoConstraint =
+    ?LC(_)
+
+  Statix-get-indent :
+    (t@LC(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"HoConstraint"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    (t@LC(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"HoConstraint"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    (t@LC(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"HoConstraint"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  is-Statix-CDecl =
+    fail
+
+  is-Statix-CDerive =
+    fail
+
+  is-Statix-Lift =
+    fail
+
+  is-Statix-Rule =
+    fail
+
+  is-Statix-RuleHead =
+    fail
+
+  is-Statix-HoConstraint =
+    fail
+
+  prettyprint-Statix-CDecl :
+    amb([h|hs]) -> <prettyprint-Statix-CDecl> h
+
+  prettyprint-Statix-CDerive :
+    amb([h|hs]) -> <prettyprint-Statix-CDerive> h
+
+  prettyprint-Statix-Lift :
+    amb([h|hs]) -> <prettyprint-Statix-Lift> h
+
+  prettyprint-Statix-Rule :
+    amb([h|hs]) -> <prettyprint-Statix-Rule> h
+
+  prettyprint-Statix-RuleHead :
+    amb([h|hs]) -> <prettyprint-Statix-RuleHead> h
+
+  prettyprint-Statix-HoConstraint :
+    amb([h|hs]) -> <prettyprint-Statix-HoConstraint> h
+
+  prettyprint-Statix-CInd :
+    CInd-Plhdr() -> [ H(
+                        [SOpt(HS(), "0")]
+                      , [S("$CInd")]
+                      )
+                    ]
+
+  is-Statix-CInd =
+    ?CInd-Plhdr()
+
+  prettyprint-Statix-Type :
+    Type-Plhdr() -> [ H(
+                        [SOpt(HS(), "0")]
+                      , [S("$Type")]
+                      )
+                    ]
+
+  is-Statix-Type =
+    ?Type-Plhdr()
+
+  prettyprint-Statix-CDecl :
+    CDecl-Plhdr() -> [ H(
+                         [SOpt(HS(), "0")]
+                       , [S("$CDecl")]
+                       )
+                     ]
+
+  is-Statix-CDecl =
+    ?CDecl-Plhdr()
+
+  prettyprint-Statix-CDerive :
+    CDerive-Plhdr() -> [ H(
+                           [SOpt(HS(), "0")]
+                         , [S("$CDerive")]
+                         )
+                       ]
+
+  is-Statix-CDerive =
+    ?CDerive-Plhdr()
+
+  prettyprint-Statix-Lift :
+    Lift-Plhdr() -> [ H(
+                        [SOpt(HS(), "0")]
+                      , [S("$Lift")]
+                      )
+                    ]
+
+  is-Statix-Lift =
+    ?Lift-Plhdr()
+
+  prettyprint-Statix-Rule :
+    Rule-Plhdr() -> [ H(
+                        [SOpt(HS(), "0")]
+                      , [S("$Rule")]
+                      )
+                    ]
+
+  is-Statix-Rule =
+    ?Rule-Plhdr()
+
+  prettyprint-Statix-RuleName :
+    RuleName-Plhdr() -> [ H(
+                            [SOpt(HS(), "0")]
+                          , [S("$RuleName")]
+                          )
+                        ]
+
+  is-Statix-RuleName =
+    ?RuleName-Plhdr()
+
+  prettyprint-Statix-RuleHead :
+    RuleHead-Plhdr() -> [ H(
+                            [SOpt(HS(), "0")]
+                          , [S("$RuleHead")]
+                          )
+                        ]
+
+  is-Statix-RuleHead =
+    ?RuleHead-Plhdr()
+
+  prettyprint-Statix-Term :
+    Term-Plhdr() -> [ H(
+                        [SOpt(HS(), "0")]
+                      , [S("$Term")]
+                      )
+                    ]
+
+  is-Statix-Term =
+    ?Term-Plhdr()
+
+  prettyprint-Statix-HoConstraint :
+    HoConstraint-Plhdr() -> [ H(
+                                [SOpt(HS(), "0")]
+                              , [S("$HoConstraint")]
+                              )
+                            ]
+
+  is-Statix-HoConstraint =
+    ?HoConstraint-Plhdr()
+
+  prettyprint-Statix-ConstraintId :
+    ConstraintId-Plhdr() -> [ H(
+                                [SOpt(HS(), "0")]
+                              , [S("$ConstraintId")]
+                              )
+                            ]
+
+  is-Statix-ConstraintId =
+    ?ConstraintId-Plhdr()
+
+  prettyprint-Statix-CInd :
+    CInd-Plhdr(_) -> [ H(
+                         [SOpt(HS(), "0")]
+                       , [S("$CInd")]
+                       )
+                     ]
+
+  is-Statix-CInd =
+    ?CInd-Plhdr(_)
+
+  prettyprint-Statix-Type :
+    Type-Plhdr(_) -> [ H(
+                         [SOpt(HS(), "0")]
+                       , [S("$Type")]
+                       )
+                     ]
+
+  is-Statix-Type =
+    ?Type-Plhdr(_)
+
+  prettyprint-Statix-CDecl :
+    CDecl-Plhdr(_) -> [ H(
+                          [SOpt(HS(), "0")]
+                        , [S("$CDecl")]
+                        )
+                      ]
+
+  is-Statix-CDecl =
+    ?CDecl-Plhdr(_)
+
+  prettyprint-Statix-CDerive :
+    CDerive-Plhdr(_) -> [ H(
+                            [SOpt(HS(), "0")]
+                          , [S("$CDerive")]
+                          )
+                        ]
+
+  is-Statix-CDerive =
+    ?CDerive-Plhdr(_)
+
+  prettyprint-Statix-Lift :
+    Lift-Plhdr(_) -> [ H(
+                         [SOpt(HS(), "0")]
+                       , [S("$Lift")]
+                       )
+                     ]
+
+  is-Statix-Lift =
+    ?Lift-Plhdr(_)
+
+  prettyprint-Statix-Rule :
+    Rule-Plhdr(_) -> [ H(
+                         [SOpt(HS(), "0")]
+                       , [S("$Rule")]
+                       )
+                     ]
+
+  is-Statix-Rule =
+    ?Rule-Plhdr(_)
+
+  prettyprint-Statix-RuleName :
+    RuleName-Plhdr(_) -> [ H(
+                             [SOpt(HS(), "0")]
+                           , [S("$RuleName")]
+                           )
+                         ]
+
+  is-Statix-RuleName =
+    ?RuleName-Plhdr(_)
+
+  prettyprint-Statix-RuleHead :
+    RuleHead-Plhdr(_) -> [ H(
+                             [SOpt(HS(), "0")]
+                           , [S("$RuleHead")]
+                           )
+                         ]
+
+  is-Statix-RuleHead =
+    ?RuleHead-Plhdr(_)
+
+  prettyprint-Statix-Term :
+    Term-Plhdr(_) -> [ H(
+                         [SOpt(HS(), "0")]
+                       , [S("$Term")]
+                       )
+                     ]
+
+  is-Statix-Term =
+    ?Term-Plhdr(_)
+
+  prettyprint-Statix-HoConstraint :
+    HoConstraint-Plhdr(_) -> [ H(
+                                 [SOpt(HS(), "0")]
+                               , [S("$HoConstraint")]
+                               )
+                             ]
+
+  is-Statix-HoConstraint =
+    ?HoConstraint-Plhdr(_)
+
+  prettyprint-Statix-ConstraintId :
+    ConstraintId-Plhdr(_) -> [ H(
+                                 [SOpt(HS(), "0")]
+                               , [S("$ConstraintId")]
+                               )
+                             ]
+
+  is-Statix-ConstraintId =
+    ?ConstraintId-Plhdr(_)
+
+  prettyprint-Statix-Lift :
+    Lift-Opt-Plhdr() -> [ H(
+                            []
+                          , [S("")]
+                          )
+                        ]
+
+  is-Statix-Lift =
+    ?Lift-Opt-Plhdr()
+
+  prettyprint-Statix-Term :
+    Term-Opt-Plhdr() -> [ H(
+                            []
+                          , [S("")]
+                          )
+                        ]
+
+  is-Statix-Term =
+    ?Term-Opt-Plhdr()
+
+
+strategies
+  prettyprint-Statix =
+    prettyprint-Statix-Term
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-Term>
+    where <?"Term"> sort
+
+  prettyprint-Statix-Term :
+    COp(t1__, t2__) -> [ H(
+                           [SOpt(HS(), "0")]
+                         , [ t1__'
+                           , S("( ")
+                           , t2__'
+                           , S(" )")
+                           ]
+                         )
+                       ]
+    with t1__' := <pp-one-Z(prettyprint-Statix-ConstraintId) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-Statix-CommaTerms) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+
+  is-Statix-Term =
+    ?COp(_, _)
+
+  Statix-get-indent :
+    (t@COp(t1__, t2__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Term"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    (t@COp(t1__, t2__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Term"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    (t@COp(t1__, t2__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Term"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  is-Statix-Term =
+    fail
+
+  prettyprint-Statix-Term :
+    amb([h|hs]) -> <prettyprint-Statix-Term> h
+
+
+strategies
+  prettyprint-Statix =
+    prettyprint-Statix-HoConstraint
+
+  prettyprint-Statix =
+    prettyprint-Statix-Term
+
+  prettyprint-Statix =
+    prettyprint-Statix-AstProperty
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-HoConstraint>
+    where <?"HoConstraint"> sort
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-Term>
+    where <?"Term"> sort
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-AstProperty>
+    where <?"AstProperty"> sort
+
+  prettyprint-Statix-HoConstraint :
+    LTrue() -> [ H(
+                   [SOpt(HS(), "0")]
+                 , [S("true")]
+                 )
+               ]
+
+  is-Statix-HoConstraint =
+    ?LTrue()
+
+  Statix-get-indent :
+    (t@LTrue(), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"HoConstraint"> sort
+    with switch !index
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    (t@LTrue(), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"HoConstraint"> sort
+    with switch !index
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    (t@LTrue(), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"HoConstraint"> sort
+    with switch !index
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statix-HoConstraint :
+    LFalse() -> [ H(
+                    [SOpt(HS(), "0")]
+                  , [S("false")]
+                  )
+                ]
+
+  is-Statix-HoConstraint =
+    ?LFalse()
+
+  Statix-get-indent :
+    (t@LFalse(), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"HoConstraint"> sort
+    with switch !index
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    (t@LFalse(), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"HoConstraint"> sort
+    with switch !index
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    (t@LFalse(), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"HoConstraint"> sort
+    with switch !index
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statix-Term :
+    NewOp() -> [ H(
+                   [SOpt(HS(), "0")]
+                 , [S("new")]
+                 )
+               ]
+
+  is-Statix-Term =
+    ?NewOp()
+
+  Statix-get-indent :
+    (t@NewOp(), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Term"> sort
+    with switch !index
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    (t@NewOp(), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Term"> sort
+    with switch !index
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    (t@NewOp(), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Term"> sort
+    with switch !index
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statix-Term :
+    AstIdOp(t1__) -> [ H(
+                         [SOpt(HS(), "0")]
+                       , [ S("astId(")
+                         , t1__'
+                         , S(")")
+                         ]
+                       )
+                     ]
+    with t1__' := <pp-one-Z(prettyprint-Statix-Term) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-Statix-Term =
+    ?AstIdOp(_)
+
+  Statix-get-indent :
+    (t@AstIdOp(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Term"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    (t@AstIdOp(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Term"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    (t@AstIdOp(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Term"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statix-AstProperty :
+    Ref() -> [ H(
+                 [SOpt(HS(), "0")]
+               , [S("ref")]
+               )
+             ]
+
+  is-Statix-AstProperty =
+    ?Ref()
+
+  Statix-get-indent :
+    (t@Ref(), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"AstProperty"> sort
+    with switch !index
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    (t@Ref(), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"AstProperty"> sort
+    with switch !index
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    (t@Ref(), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"AstProperty"> sort
+    with switch !index
+           otherwise :
+             ws := ""
+         end
+
+  is-Statix-HoConstraint =
+    fail
+
+  is-Statix-Term =
+    fail
+
+  is-Statix-AstProperty =
+    fail
+
+  prettyprint-Statix-HoConstraint :
+    amb([h|hs]) -> <prettyprint-Statix-HoConstraint> h
+
+  prettyprint-Statix-Term :
+    amb([h|hs]) -> <prettyprint-Statix-Term> h
+
+  prettyprint-Statix-AstProperty :
+    amb([h|hs]) -> <prettyprint-Statix-AstProperty> h
+
+  prettyprint-Statix-HoConstraint :
+    HoConstraint-Plhdr() -> [ H(
+                                [SOpt(HS(), "0")]
+                              , [S("$HoConstraint")]
+                              )
+                            ]
+
+  is-Statix-HoConstraint =
+    ?HoConstraint-Plhdr()
+
+  prettyprint-Statix-Term :
+    Term-Plhdr() -> [ H(
+                        [SOpt(HS(), "0")]
+                      , [S("$Term")]
+                      )
+                    ]
+
+  is-Statix-Term =
+    ?Term-Plhdr()
+
+  prettyprint-Statix-AstProperty :
+    AstProperty-Plhdr() -> [ H(
+                               [SOpt(HS(), "0")]
+                             , [S("$AstProperty")]
+                             )
+                           ]
+
+  is-Statix-AstProperty =
+    ?AstProperty-Plhdr()
+
+  prettyprint-Statix-HoConstraint :
+    HoConstraint-Plhdr(_) -> [ H(
+                                 [SOpt(HS(), "0")]
+                               , [S("$HoConstraint")]
+                               )
+                             ]
+
+  is-Statix-HoConstraint =
+    ?HoConstraint-Plhdr(_)
+
+  prettyprint-Statix-Term :
+    Term-Plhdr(_) -> [ H(
+                         [SOpt(HS(), "0")]
+                       , [S("$Term")]
+                       )
+                     ]
+
+  is-Statix-Term =
+    ?Term-Plhdr(_)
+
+  prettyprint-Statix-AstProperty :
+    AstProperty-Plhdr(_) -> [ H(
+                                [SOpt(HS(), "0")]
+                              , [S("$AstProperty")]
+                              )
+                            ]
+
+  is-Statix-AstProperty =
+    ?AstProperty-Plhdr(_)
+
+
+strategies
+  prettyprint-Statix =
+    prettyprint-Statix-RelRef
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-RelRef>
+    where <?"RelRef"> sort
+
+  prettyprint-Statix-RelRef :
+    Decl() -> [ H(
+                  [SOpt(HS(), "0")]
+                , [S("decl")]
+                )
+              ]
+
+  is-Statix-RelRef =
+    ?Decl()
+
+  Statix-get-indent :
+    (t@Decl(), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"RelRef"> sort
+    with switch !index
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    (t@Decl(), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"RelRef"> sort
+    with switch !index
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    (t@Decl(), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"RelRef"> sort
+    with switch !index
+           otherwise :
+             ws := ""
+         end
+
+  is-Statix-RelRef =
+    fail
+
+  prettyprint-Statix-RelRef :
+    amb([h|hs]) -> <prettyprint-Statix-RelRef> h
+
+  prettyprint-Statix-RelRef :
+    RelRef-Plhdr() -> [ H(
+                          [SOpt(HS(), "0")]
+                        , [S("$RelRef")]
+                        )
+                      ]
+
+  is-Statix-RelRef =
+    ?RelRef-Plhdr()
+
+  prettyprint-Statix-RelRef :
+    RelRef-Plhdr(_) -> [ H(
+                           [SOpt(HS(), "0")]
+                         , [S("$RelRef")]
+                         )
+                       ]
+
+  is-Statix-RelRef =
+    ?RelRef-Plhdr(_)
+
+
+strategies
+  prettyprint-Statix =
+    prettyprint-Statix-Constraint
+
+  prettyprint-Statix =
+    prettyprint-Statix-Term
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-Constraint>
+    where <?"Constraint"> sort
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-Term>
+    where <?"Term"> sort
+
+  prettyprint-Statix-Constraint :
+    CAskRel(t1__, t2__, t3__, t4__) -> [ H(
+                                           [SOpt(HS(), "0")]
+                                         , [ S("?")
+                                           , t1__'
+                                           , S("[")
+                                           , t2__'
+                                           , S("] in ")
+                                           , t3__'
+                                           , S(" ")
+                                           , t4__'
+                                           ]
+                                         )
+                                       ]
+    with t1__' := <pp-one-Z(prettyprint-Statix-RelRef) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-Statix-CommaTerms) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+    with t3__' := <pp-one-Z(prettyprint-Statix-Term) <+ pp-one-Z(prettyprint-completion-aux)> t3__
+    with t4__' := <pp-one-Z(prettyprint-Statix-Message) <+ pp-one-Z(prettyprint-completion-aux)> t4__
+
+  is-Statix-Constraint =
+    ?CAskRel(_, _, _, _)
+
+  Statix-get-indent :
+    ( t@CAskRel(t1__, t2__, t3__, t4__)
+    , index
+    ) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Constraint"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           case ?3 :
+             indent := ""
+           case ?4 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    ( t@CAskRel(t1__, t2__, t3__, t4__)
+    , index
+    ) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Constraint"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           case ?3 :
+             separator := ""
+           case ?4 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    ( t@CAskRel(t1__, t2__, t3__, t4__)
+    , index
+    ) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Constraint"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := ""
+           case ?3 :
+             ws := " "
+           case ?4 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statix-Term :
+    AskRelOp(t1__, t2__, t3__) -> [ H(
+                                      [SOpt(HS(), "0")]
+                                    , [ S("?")
+                                      , t1__'
+                                      , S("[ ")
+                                      , t2__'
+                                      , S(" ] in ")
+                                      , t3__'
+                                      ]
+                                    )
+                                  ]
+    with t1__' := <pp-one-Z(prettyprint-Statix-RelRef) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-Statix-CommaTerms) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+    with t3__' := <pp-one-Z(prettyprint-Statix-Term) <+ pp-one-Z(prettyprint-completion-aux)> t3__
+
+  is-Statix-Term =
+    ?AskRelOp(_, _, _)
+
+  Statix-get-indent :
+    ( t@AskRelOp(t1__, t2__, t3__)
+    , index
+    ) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Term"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           case ?3 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    ( t@AskRelOp(t1__, t2__, t3__)
+    , index
+    ) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Term"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           case ?3 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    ( t@AskRelOp(t1__, t2__, t3__)
+    , index
+    ) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Term"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := " "
+           case ?3 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  is-Statix-Constraint =
+    fail
+
+  is-Statix-Term =
+    fail
+
+  prettyprint-Statix-Constraint :
+    amb([h|hs]) -> <prettyprint-Statix-Constraint> h
+
+  prettyprint-Statix-Term :
+    amb([h|hs]) -> <prettyprint-Statix-Term> h
+
+
+strategies
+  prettyprint-Statix =
+    prettyprint-Statix-NamespaceQuery
+
+  prettyprint-Statix =
+    prettyprint-Statix-ResolutionParam
+
+  prettyprint-Statix =
+    prettyprint-Statix-Rule
+
+  prettyprint-Statix =
+    prettyprint-Statix-NamespaceFilter
+
+  prettyprint-Statix =
+    prettyprint-Statix-NamespaceMin
+
+  prettyprint-Statix =
+    prettyprint-Statix-Constraint
+
+  prettyprint-Statix =
+    prettyprint-Statix-RelData
+
+  prettyprint-Statix =
+    prettyprint-Statix-LabelRE
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-NamespaceQuery>
+    where <?"NamespaceQuery"> sort
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-ResolutionParam>
+    where <?"ResolutionParam"> sort
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-Rule>
+    where <?"Rule"> sort
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-NamespaceFilter>
+    where <?"NamespaceFilter"> sort
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-NamespaceMin>
+    where <?"NamespaceMin"> sort
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-Constraint>
+    where <?"Constraint"> sort
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-RelData>
+    where <?"RelData"> sort
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-LabelRE>
+    where <?"LabelRE"> sort
+
+  prettyprint-Statix-NamespaceQuery :
+    NamespaceQuery(t1__, t2__, t3__) -> [ H(
+                                            [SOpt(HS(), "0")]
+                                          , [S("resolve "), t1__', t2__', t3__']
+                                          )
+                                        ]
+    with t1__' := <pp-one-Z(prettyprint-Statix-NamespaceId) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-Statix-NamespaceFilter) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+    with t3__' := <pp-one-Z(prettyprint-Statix-NamespaceMin) <+ pp-one-Z(prettyprint-completion-aux)> t3__
+
+  is-Statix-NamespaceQuery =
+    ?NamespaceQuery(_, _, _)
+
+  Statix-get-indent :
+    ( t@NamespaceQuery(t1__, t2__, t3__)
+    , index
+    ) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"NamespaceQuery"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           case ?3 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    ( t@NamespaceQuery(t1__, t2__, t3__)
+    , index
+    ) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"NamespaceQuery"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           case ?3 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    ( t@NamespaceQuery(t1__, t2__, t3__)
+    , index
+    ) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"NamespaceQuery"> sort
+    with switch !index
+           case ?1 :
+             ws := " "
+           case ?2 :
+             ws := ""
+           case ?3 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statix-ResolutionParam :
+    t1__ -> [ H(
+                [SOpt(HS(), "0")]
+              , [t1__']
+              )
+            ]
+    where not(is-Statix-ResolutionParam)
+    where t1__' := <pp-one-Z(prettyprint-Statix-NamespaceQuery) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  prettyprint-Statix-Rule :
+    t1__ -> [ H(
+                [SOpt(HS(), "0")]
+              , [t1__']
+              )
+            ]
+    where not(is-Statix-Rule)
+    where t1__' := <pp-one-Z(prettyprint-Statix-NamespaceQuery) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  prettyprint-Statix-NamespaceFilter :
+    NamespaceFilter(t1__) -> [ H(
+                                 [SOpt(HS(), "0")]
+                               , [S(" filter "), t1__']
+                               )
+                             ]
+    with t1__' := <pp-one-Z(prettyprint-Statix-LabelRE) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-Statix-NamespaceFilter =
+    ?NamespaceFilter(_)
+
+  Statix-get-indent :
+    (t@NamespaceFilter(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"NamespaceFilter"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    (t@NamespaceFilter(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"NamespaceFilter"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    (t@NamespaceFilter(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"NamespaceFilter"> sort
+    with switch !index
+           case ?1 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statix-NamespaceFilter :
+    NoNamespaceFilter() -> [ H(
+                               []
+                             , [S("")]
+                             )
+                           ]
+
+  is-Statix-NamespaceFilter =
+    ?NoNamespaceFilter()
+
+  Statix-get-indent :
+    (t@NoNamespaceFilter(), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"NamespaceFilter"> sort
+    with switch !index
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    (t@NoNamespaceFilter(), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"NamespaceFilter"> sort
+    with switch !index
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    (t@NoNamespaceFilter(), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"NamespaceFilter"> sort
+    with switch !index
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statix-NamespaceMin :
+    NamespaceMin(t1__) -> [ H(
+                              [SOpt(HS(), "0")]
+                            , [S(" min "), t1__']
+                            )
+                          ]
+    with t1__' := <pp-one-Z(prettyprint-Statix-LabelPairs) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-Statix-NamespaceMin =
+    ?NamespaceMin(_)
+
+  Statix-get-indent :
+    (t@NamespaceMin(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"NamespaceMin"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    (t@NamespaceMin(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"NamespaceMin"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    (t@NamespaceMin(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"NamespaceMin"> sort
+    with switch !index
+           case ?1 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statix-NamespaceMin :
+    NoNamespaceMin() -> [ H(
+                            []
+                          , [S("")]
+                          )
+                        ]
+
+  is-Statix-NamespaceMin =
+    ?NoNamespaceMin()
+
+  Statix-get-indent :
+    (t@NoNamespaceMin(), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"NamespaceMin"> sort
+    with switch !index
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    (t@NoNamespaceMin(), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"NamespaceMin"> sort
+    with switch !index
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    (t@NoNamespaceMin(), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"NamespaceMin"> sort
+    with switch !index
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statix-Constraint :
+    CTellDecl(t1__, t2__) -> [ H(
+                                 [SOpt(HS(), "0")]
+                               , [t1__', S(" -> "), t2__']
+                               )
+                             ]
+    with t1__' := <pp-one-Z(prettyprint-Statix-Term) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-Statix-Occurrence) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+
+  is-Statix-Constraint =
+    ?CTellDecl(_, _)
+
+  Statix-get-indent :
+    (t@CTellDecl(t1__, t2__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Constraint"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    (t@CTellDecl(t1__, t2__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Constraint"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    (t@CTellDecl(t1__, t2__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Constraint"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statix-Constraint :
+    CTellDeclWithRels(t1__, t2__, t3__) -> [ H(
+                                               [SOpt(HS(), "0")]
+                                             , [ t1__'
+                                               , S(" -> ")
+                                               , t2__'
+                                               , S(" with ")
+                                               , t3__'
+                                               ]
+                                             )
+                                           ]
+    with t1__' := <pp-one-Z(prettyprint-Statix-Term) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-Statix-Occurrence) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+    with t3__' := <pp-H-list(prettyprint-Statix-RelData|" and ")
+                   <+ pp-one-Z(prettyprint-completion-aux)> t3__
+
+  is-Statix-Constraint =
+    ?CTellDeclWithRels(_, _, _)
+
+  Statix-get-indent :
+    ( t@CTellDeclWithRels(t1__, t2__, t3__)
+    , index
+    ) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Constraint"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           case ?3 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    ( t@CTellDeclWithRels(t1__, t2__, t3__)
+    , index
+    ) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Constraint"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           case ?3 :
+             separator := " and "
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    ( t@CTellDeclWithRels(t1__, t2__, t3__)
+    , index
+    ) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Constraint"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := " "
+           case ?3 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statix-RelData :
+    (t1__, t2__) -> [ H(
+                        [SOpt(HS(), "0")]
+                      , [t1__', S(" "), t2__']
+                      )
+                    ]
+    with t1__' := <pp-one-Z(prettyprint-Statix-RelRef) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-Statix-Term) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+
+  prettyprint-Statix-LabelRE :
+    ZeroOrOne(t1__) -> [ H(
+                           [SOpt(HS(), "0")]
+                         , [t1__', S("?")]
+                         )
+                       ]
+    with t1__' := <pp-one-Z(prettyprint-Statix-LabelRE) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-Statix-LabelRE =
+    ?ZeroOrOne(_)
+
+  Statix-get-indent :
+    (t@ZeroOrOne(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"LabelRE"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    (t@ZeroOrOne(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"LabelRE"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    (t@ZeroOrOne(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"LabelRE"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statix-LabelRE :
+    OneOrMore(t1__) -> [ H(
+                           [SOpt(HS(), "0")]
+                         , [t1__', S("+")]
+                         )
+                       ]
+    with t1__' := <pp-one-Z(prettyprint-Statix-LabelRE) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-Statix-LabelRE =
+    ?OneOrMore(_)
+
+  Statix-get-indent :
+    (t@OneOrMore(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"LabelRE"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    (t@OneOrMore(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"LabelRE"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    (t@OneOrMore(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"LabelRE"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  is-Statix-NamespaceQuery =
+    fail
+
+  is-Statix-ResolutionParam =
+    fail
+
+  is-Statix-Rule =
+    fail
+
+  is-Statix-NamespaceFilter =
+    fail
+
+  is-Statix-NamespaceMin =
+    fail
+
+  is-Statix-Constraint =
+    fail
+
+  is-Statix-RelData =
+    fail
+
+  is-Statix-LabelRE =
+    fail
+
+  prettyprint-Statix-NamespaceQuery :
+    amb([h|hs]) -> <prettyprint-Statix-NamespaceQuery> h
+
+  prettyprint-Statix-ResolutionParam :
+    amb([h|hs]) -> <prettyprint-Statix-ResolutionParam> h
+
+  prettyprint-Statix-Rule :
+    amb([h|hs]) -> <prettyprint-Statix-Rule> h
+
+  prettyprint-Statix-NamespaceFilter :
+    amb([h|hs]) -> <prettyprint-Statix-NamespaceFilter> h
+
+  prettyprint-Statix-NamespaceMin :
+    amb([h|hs]) -> <prettyprint-Statix-NamespaceMin> h
+
+  prettyprint-Statix-Constraint :
+    amb([h|hs]) -> <prettyprint-Statix-Constraint> h
+
+  prettyprint-Statix-RelData :
+    amb([h|hs]) -> <prettyprint-Statix-RelData> h
+
+  prettyprint-Statix-LabelRE :
+    amb([h|hs]) -> <prettyprint-Statix-LabelRE> h
+
+  prettyprint-Statix-NamespaceId :
+    NamespaceId-Plhdr() -> [ H(
+                               [SOpt(HS(), "0")]
+                             , [S("$NamespaceId")]
+                             )
+                           ]
+
+  is-Statix-NamespaceId =
+    ?NamespaceId-Plhdr()
+
+  prettyprint-Statix-ResolutionParam :
+    ResolutionParam-Plhdr() -> [ H(
+                                   [SOpt(HS(), "0")]
+                                 , [S("$ResolutionParam")]
+                                 )
+                               ]
+
+  is-Statix-ResolutionParam =
+    ?ResolutionParam-Plhdr()
+
+  prettyprint-Statix-Rule :
+    Rule-Plhdr() -> [ H(
+                        [SOpt(HS(), "0")]
+                      , [S("$Rule")]
+                      )
+                    ]
+
+  is-Statix-Rule =
+    ?Rule-Plhdr()
+
+  prettyprint-Statix-NamespaceQuery :
+    NamespaceQuery-Plhdr() -> [ H(
+                                  [SOpt(HS(), "0")]
+                                , [S("$NamespaceQuery")]
+                                )
+                              ]
+
+  is-Statix-NamespaceQuery =
+    ?NamespaceQuery-Plhdr()
+
+  prettyprint-Statix-NamespaceFilter :
+    NamespaceFilter-Plhdr() -> [ H(
+                                   [SOpt(HS(), "0")]
+                                 , [S("$NamespaceFilter")]
+                                 )
+                               ]
+
+  is-Statix-NamespaceFilter =
+    ?NamespaceFilter-Plhdr()
+
+  prettyprint-Statix-LabelPairs :
+    LabelPairs-Plhdr() -> [ H(
+                              [SOpt(HS(), "0")]
+                            , [S("$LabelPairs")]
+                            )
+                          ]
+
+  is-Statix-LabelPairs =
+    ?LabelPairs-Plhdr()
+
+  prettyprint-Statix-NamespaceMin :
+    NamespaceMin-Plhdr() -> [ H(
+                                [SOpt(HS(), "0")]
+                              , [S("$NamespaceMin")]
+                              )
+                            ]
+
+  is-Statix-NamespaceMin =
+    ?NamespaceMin-Plhdr()
+
+  prettyprint-Statix-Constraint :
+    Constraint-Plhdr() -> [ H(
+                              [SOpt(HS(), "0")]
+                            , [S("$Constraint")]
+                            )
+                          ]
+
+  is-Statix-Constraint =
+    ?Constraint-Plhdr()
+
+  prettyprint-Statix-Occurrence :
+    Occurrence-Plhdr() -> [ H(
+                              [SOpt(HS(), "0")]
+                            , [S("$Occurrence")]
+                            )
+                          ]
+
+  is-Statix-Occurrence =
+    ?Occurrence-Plhdr()
+
+  prettyprint-Statix-RelData :
+    RelData-Plhdr() -> [ H(
+                           [SOpt(HS(), "0")]
+                         , [S("$RelData")]
+                         )
+                       ]
+
+  is-Statix-RelData =
+    ?RelData-Plhdr()
+
+  prettyprint-Statix-RelRef :
+    RelRef-Plhdr() -> [ H(
+                          [SOpt(HS(), "0")]
+                        , [S("$RelRef")]
+                        )
+                      ]
+
+  is-Statix-RelRef =
+    ?RelRef-Plhdr()
+
+  prettyprint-Statix-Term :
+    Term-Plhdr() -> [ H(
+                        [SOpt(HS(), "0")]
+                      , [S("$Term")]
+                      )
+                    ]
+
+  is-Statix-Term =
+    ?Term-Plhdr()
+
+  prettyprint-Statix-LabelRE :
+    LabelRE-Plhdr() -> [ H(
+                           [SOpt(HS(), "0")]
+                         , [S("$LabelRE")]
+                         )
+                       ]
+
+  is-Statix-LabelRE =
+    ?LabelRE-Plhdr()
+
+  prettyprint-Statix-NamespaceId :
+    NamespaceId-Plhdr(_) -> [ H(
+                                [SOpt(HS(), "0")]
+                              , [S("$NamespaceId")]
+                              )
+                            ]
+
+  is-Statix-NamespaceId =
+    ?NamespaceId-Plhdr(_)
+
+  prettyprint-Statix-ResolutionParam :
+    ResolutionParam-Plhdr(_) -> [ H(
+                                    [SOpt(HS(), "0")]
+                                  , [S("$ResolutionParam")]
+                                  )
+                                ]
+
+  is-Statix-ResolutionParam =
+    ?ResolutionParam-Plhdr(_)
+
+  prettyprint-Statix-Rule :
+    Rule-Plhdr(_) -> [ H(
+                         [SOpt(HS(), "0")]
+                       , [S("$Rule")]
+                       )
+                     ]
+
+  is-Statix-Rule =
+    ?Rule-Plhdr(_)
+
+  prettyprint-Statix-NamespaceQuery :
+    NamespaceQuery-Plhdr(_) -> [ H(
+                                   [SOpt(HS(), "0")]
+                                 , [S("$NamespaceQuery")]
+                                 )
+                               ]
+
+  is-Statix-NamespaceQuery =
+    ?NamespaceQuery-Plhdr(_)
+
+  prettyprint-Statix-NamespaceFilter :
+    NamespaceFilter-Plhdr(_) -> [ H(
+                                    [SOpt(HS(), "0")]
+                                  , [S("$NamespaceFilter")]
+                                  )
+                                ]
+
+  is-Statix-NamespaceFilter =
+    ?NamespaceFilter-Plhdr(_)
+
+  prettyprint-Statix-LabelPairs :
+    LabelPairs-Plhdr(_) -> [ H(
+                               [SOpt(HS(), "0")]
+                             , [S("$LabelPairs")]
+                             )
+                           ]
+
+  is-Statix-LabelPairs =
+    ?LabelPairs-Plhdr(_)
+
+  prettyprint-Statix-NamespaceMin :
+    NamespaceMin-Plhdr(_) -> [ H(
+                                 [SOpt(HS(), "0")]
+                               , [S("$NamespaceMin")]
+                               )
+                             ]
+
+  is-Statix-NamespaceMin =
+    ?NamespaceMin-Plhdr(_)
+
+  prettyprint-Statix-Constraint :
+    Constraint-Plhdr(_) -> [ H(
+                               [SOpt(HS(), "0")]
+                             , [S("$Constraint")]
+                             )
+                           ]
+
+  is-Statix-Constraint =
+    ?Constraint-Plhdr(_)
+
+  prettyprint-Statix-Occurrence :
+    Occurrence-Plhdr(_) -> [ H(
+                               [SOpt(HS(), "0")]
+                             , [S("$Occurrence")]
+                             )
+                           ]
+
+  is-Statix-Occurrence =
+    ?Occurrence-Plhdr(_)
+
+  prettyprint-Statix-RelData :
+    RelData-Plhdr(_) -> [ H(
+                            [SOpt(HS(), "0")]
+                          , [S("$RelData")]
+                          )
+                        ]
+
+  is-Statix-RelData =
+    ?RelData-Plhdr(_)
+
+  prettyprint-Statix-RelRef :
+    RelRef-Plhdr(_) -> [ H(
+                           [SOpt(HS(), "0")]
+                         , [S("$RelRef")]
+                         )
+                       ]
+
+  is-Statix-RelRef =
+    ?RelRef-Plhdr(_)
+
+  prettyprint-Statix-Term :
+    Term-Plhdr(_) -> [ H(
+                         [SOpt(HS(), "0")]
+                       , [S("$Term")]
+                       )
+                     ]
+
+  is-Statix-Term =
+    ?Term-Plhdr(_)
+
+  prettyprint-Statix-LabelRE :
+    LabelRE-Plhdr(_) -> [ H(
+                            [SOpt(HS(), "0")]
+                          , [S("$LabelRE")]
+                          )
+                        ]
+
+  is-Statix-LabelRE =
+    ?LabelRE-Plhdr(_)
+
+  prettyprint-Statix-NamespaceFilter :
+    NamespaceFilter-Opt-Plhdr() -> [ H(
+                                       []
+                                     , [S("")]
+                                     )
+                                   ]
+
+  is-Statix-NamespaceFilter =
+    ?NamespaceFilter-Opt-Plhdr()
+
+  prettyprint-Statix-NamespaceMin :
+    NamespaceMin-Opt-Plhdr() -> [ H(
+                                    []
+                                  , [S("")]
+                                  )
+                                ]
+
+  is-Statix-NamespaceMin =
+    ?NamespaceMin-Opt-Plhdr()
+
+
+strategies
+  prettyprint-Statix =
+    prettyprint-Statix-QueryFilter
+
+  prettyprint-Statix =
+    prettyprint-Statix-QueryMin
+
+  prettyprint-Statix =
+    prettyprint-Statix-Constraint
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-QueryFilter>
+    where <?"QueryFilter"> sort
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-QueryMin>
+    where <?"QueryMin"> sort
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-Constraint>
+    where <?"Constraint"> sort
+
+  prettyprint-Statix-QueryFilter :
+    NoFilter() -> [ H(
+                      []
+                    , [S("")]
+                    )
+                  ]
+
+  is-Statix-QueryFilter =
+    ?NoFilter()
+
+  Statix-get-indent :
+    (t@NoFilter(), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"QueryFilter"> sort
+    with switch !index
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    (t@NoFilter(), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"QueryFilter"> sort
+    with switch !index
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    (t@NoFilter(), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"QueryFilter"> sort
+    with switch !index
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statix-QueryFilter :
+    Filter(t1__) -> [ H(
+                        [SOpt(HS(), "0")]
+                      , [S(" filter "), t1__']
+                      )
+                    ]
+    with t1__' := <pp-one-Z(prettyprint-Statix-LabelRE) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-Statix-QueryFilter =
+    ?Filter(_)
+
+  Statix-get-indent :
+    (t@Filter(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"QueryFilter"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    (t@Filter(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"QueryFilter"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    (t@Filter(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"QueryFilter"> sort
+    with switch !index
+           case ?1 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statix-QueryMin :
+    NoMin() -> [ H(
+                   []
+                 , [S("")]
+                 )
+               ]
+
+  is-Statix-QueryMin =
+    ?NoMin()
+
+  Statix-get-indent :
+    (t@NoMin(), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"QueryMin"> sort
+    with switch !index
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    (t@NoMin(), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"QueryMin"> sort
+    with switch !index
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    (t@NoMin(), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"QueryMin"> sort
+    with switch !index
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statix-QueryMin :
+    Min(t1__) -> [ H(
+                     [SOpt(HS(), "0")]
+                   , [S(" min "), t1__']
+                   )
+                 ]
+    with t1__' := <pp-one-Z(prettyprint-Statix-LabelOrd) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-Statix-QueryMin =
+    ?Min(_)
+
+  Statix-get-indent :
+    (t@Min(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"QueryMin"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    (t@Min(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"QueryMin"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    (t@Min(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"QueryMin"> sort
+    with switch !index
+           case ?1 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statix-Constraint :
+    CResolveRef(t1__, t2__, t3__, t4__) -> [ H(
+                                               [SOpt(HS(), "0")]
+                                             , [ t1__'
+                                               , S(" in ")
+                                               , t2__'
+                                               , S(" |-> ")
+                                               , t3__'
+                                               , t4__'
+                                               ]
+                                             )
+                                           ]
+    with t1__' := <pp-one-Z(prettyprint-Statix-Occurrence) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-Statix-Term) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+    with t3__' := <pp-one-Z(prettyprint-Statix-Term) <+ pp-one-Z(prettyprint-completion-aux)> t3__
+    with t4__' := <pp-one-Z(prettyprint-Statix-Message) <+ pp-one-Z(prettyprint-completion-aux)> t4__
+
+  is-Statix-Constraint =
+    ?CResolveRef(_, _, _, _)
+
+  Statix-get-indent :
+    ( t@CResolveRef(t1__, t2__, t3__, t4__)
+    , index
+    ) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Constraint"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           case ?3 :
+             indent := ""
+           case ?4 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    ( t@CResolveRef(t1__, t2__, t3__, t4__)
+    , index
+    ) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Constraint"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           case ?3 :
+             separator := ""
+           case ?4 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    ( t@CResolveRef(t1__, t2__, t3__, t4__)
+    , index
+    ) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Constraint"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := " "
+           case ?3 :
+             ws := " "
+           case ?4 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statix-Constraint :
+    CResolveRefWithRel(t1__, t2__, t3__, t4__, t5__) -> [ H(
+                                                            [SOpt(HS(), "0")]
+                                                          , [ t1__'
+                                                            , S(" of ")
+                                                            , t2__'
+                                                            , S(" in ")
+                                                            , t3__'
+                                                            , S(" |-> ")
+                                                            , t4__'
+                                                            , t5__'
+                                                            ]
+                                                          )
+                                                        ]
+    with t1__' := <pp-one-Z(prettyprint-Statix-RelRef) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-Statix-Occurrence) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+    with t3__' := <pp-one-Z(prettyprint-Statix-Term) <+ pp-one-Z(prettyprint-completion-aux)> t3__
+    with t4__' := <pp-one-Z(prettyprint-Statix-Term) <+ pp-one-Z(prettyprint-completion-aux)> t4__
+    with t5__' := <pp-one-Z(prettyprint-Statix-Message) <+ pp-one-Z(prettyprint-completion-aux)> t5__
+
+  is-Statix-Constraint =
+    ?CResolveRefWithRel(_, _, _, _, _)
+
+  Statix-get-indent :
+    ( t@CResolveRefWithRel(t1__, t2__, t3__, t4__, t5__)
+    , index
+    ) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Constraint"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           case ?3 :
+             indent := ""
+           case ?4 :
+             indent := ""
+           case ?5 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    ( t@CResolveRefWithRel(t1__, t2__, t3__, t4__, t5__)
+    , index
+    ) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Constraint"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           case ?2 :
+             separator := ""
+           case ?3 :
+             separator := ""
+           case ?4 :
+             separator := ""
+           case ?5 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    ( t@CResolveRefWithRel(t1__, t2__, t3__, t4__, t5__)
+    , index
+    ) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Constraint"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := " "
+           case ?3 :
+             ws := " "
+           case ?4 :
+             ws := " "
+           case ?5 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  is-Statix-QueryFilter =
+    fail
+
+  is-Statix-QueryMin =
+    fail
+
+  is-Statix-Constraint =
+    fail
+
+  prettyprint-Statix-QueryFilter :
+    amb([h|hs]) -> <prettyprint-Statix-QueryFilter> h
+
+  prettyprint-Statix-QueryMin :
+    amb([h|hs]) -> <prettyprint-Statix-QueryMin> h
+
+  prettyprint-Statix-Constraint :
+    amb([h|hs]) -> <prettyprint-Statix-Constraint> h
+
+  prettyprint-Statix-QueryFilter :
+    QueryFilter-Plhdr() -> [ H(
+                               [SOpt(HS(), "0")]
+                             , [S("$QueryFilter")]
+                             )
+                           ]
+
+  is-Statix-QueryFilter =
+    ?QueryFilter-Plhdr()
+
+  prettyprint-Statix-LabelRE :
+    LabelRE-Plhdr() -> [ H(
+                           [SOpt(HS(), "0")]
+                         , [S("$LabelRE")]
+                         )
+                       ]
+
+  is-Statix-LabelRE =
+    ?LabelRE-Plhdr()
+
+  prettyprint-Statix-QueryMin :
+    QueryMin-Plhdr() -> [ H(
+                            [SOpt(HS(), "0")]
+                          , [S("$QueryMin")]
+                          )
+                        ]
+
+  is-Statix-QueryMin =
+    ?QueryMin-Plhdr()
+
+  prettyprint-Statix-LabelOrd :
+    LabelOrd-Plhdr() -> [ H(
+                            [SOpt(HS(), "0")]
+                          , [S("$LabelOrd")]
+                          )
+                        ]
+
+  is-Statix-LabelOrd =
+    ?LabelOrd-Plhdr()
+
+  prettyprint-Statix-Constraint :
+    Constraint-Plhdr() -> [ H(
+                              [SOpt(HS(), "0")]
+                            , [S("$Constraint")]
+                            )
+                          ]
+
+  is-Statix-Constraint =
+    ?Constraint-Plhdr()
+
+  prettyprint-Statix-RelRef :
+    RelRef-Plhdr() -> [ H(
+                          [SOpt(HS(), "0")]
+                        , [S("$RelRef")]
+                        )
+                      ]
+
+  is-Statix-RelRef =
+    ?RelRef-Plhdr()
+
+  prettyprint-Statix-Occurrence :
+    Occurrence-Plhdr() -> [ H(
+                              [SOpt(HS(), "0")]
+                            , [S("$Occurrence")]
+                            )
+                          ]
+
+  is-Statix-Occurrence =
+    ?Occurrence-Plhdr()
+
+  prettyprint-Statix-Term :
+    Term-Plhdr() -> [ H(
+                        [SOpt(HS(), "0")]
+                      , [S("$Term")]
+                      )
+                    ]
+
+  is-Statix-Term =
+    ?Term-Plhdr()
+
+  prettyprint-Statix-Message :
+    Message-Plhdr() -> [ H(
+                           [SOpt(HS(), "0")]
+                         , [S("$Message")]
+                         )
+                       ]
+
+  is-Statix-Message =
+    ?Message-Plhdr()
+
+  prettyprint-Statix-QueryFilter :
+    QueryFilter-Plhdr(_) -> [ H(
+                                [SOpt(HS(), "0")]
+                              , [S("$QueryFilter")]
+                              )
+                            ]
+
+  is-Statix-QueryFilter =
+    ?QueryFilter-Plhdr(_)
+
+  prettyprint-Statix-LabelRE :
+    LabelRE-Plhdr(_) -> [ H(
+                            [SOpt(HS(), "0")]
+                          , [S("$LabelRE")]
+                          )
+                        ]
+
+  is-Statix-LabelRE =
+    ?LabelRE-Plhdr(_)
+
+  prettyprint-Statix-QueryMin :
+    QueryMin-Plhdr(_) -> [ H(
+                             [SOpt(HS(), "0")]
+                           , [S("$QueryMin")]
+                           )
+                         ]
+
+  is-Statix-QueryMin =
+    ?QueryMin-Plhdr(_)
+
+  prettyprint-Statix-LabelOrd :
+    LabelOrd-Plhdr(_) -> [ H(
+                             [SOpt(HS(), "0")]
+                           , [S("$LabelOrd")]
+                           )
+                         ]
+
+  is-Statix-LabelOrd =
+    ?LabelOrd-Plhdr(_)
+
+  prettyprint-Statix-Constraint :
+    Constraint-Plhdr(_) -> [ H(
+                               [SOpt(HS(), "0")]
+                             , [S("$Constraint")]
+                             )
+                           ]
+
+  is-Statix-Constraint =
+    ?Constraint-Plhdr(_)
+
+  prettyprint-Statix-RelRef :
+    RelRef-Plhdr(_) -> [ H(
+                           [SOpt(HS(), "0")]
+                         , [S("$RelRef")]
+                         )
+                       ]
+
+  is-Statix-RelRef =
+    ?RelRef-Plhdr(_)
+
+  prettyprint-Statix-Occurrence :
+    Occurrence-Plhdr(_) -> [ H(
+                               [SOpt(HS(), "0")]
+                             , [S("$Occurrence")]
+                             )
+                           ]
+
+  is-Statix-Occurrence =
+    ?Occurrence-Plhdr(_)
+
+  prettyprint-Statix-Term :
+    Term-Plhdr(_) -> [ H(
+                         [SOpt(HS(), "0")]
+                       , [S("$Term")]
+                       )
+                     ]
+
+  is-Statix-Term =
+    ?Term-Plhdr(_)
+
+  prettyprint-Statix-Message :
+    Message-Plhdr(_) -> [ H(
+                            [SOpt(HS(), "0")]
+                          , [S("$Message")]
+                          )
+                        ]
+
+  is-Statix-Message =
+    ?Message-Plhdr(_)
+
+  prettyprint-Statix-QueryFilter :
+    QueryFilter-Opt-Plhdr() -> [ H(
+                                   []
+                                 , [S("")]
+                                 )
+                               ]
+
+  is-Statix-QueryFilter =
+    ?QueryFilter-Opt-Plhdr()
+
+  prettyprint-Statix-QueryMin :
+    QueryMin-Opt-Plhdr() -> [ H(
+                                []
+                              , [S("")]
+                              )
+                            ]
+
+  is-Statix-QueryMin =
+    ?QueryMin-Opt-Plhdr()
+
+
+strategies
+  prettyprint-Statix =
+    prettyprint-Statix-LabelRE
+
+  prettyprint-Statix =
+    prettyprint-Statix-LabelOrd
+
+  prettyprint-Statix =
+    prettyprint-Statix-HoConstraint
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-LabelRE>
+    where <?"LabelRE"> sort
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-LabelOrd>
+    where <?"LabelOrd"> sort
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-HoConstraint>
+    where <?"HoConstraint"> sort
+
+  prettyprint-Statix-LabelRE :
+    ResolveMatch(t1__) -> [ H(
+                              [SOpt(HS(), "0")]
+                            , [ S("resolveMatch[ ")
+                              , t1__'
+                              , S(" ]")
+                              ]
+                            )
+                          ]
+    with t1__' := <pp-one-Z(prettyprint-Statix-Occurrence) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-Statix-LabelRE =
+    ?ResolveMatch(_)
+
+  Statix-get-indent :
+    (t@ResolveMatch(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"LabelRE"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    (t@ResolveMatch(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"LabelRE"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    (t@ResolveMatch(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"LabelRE"> sort
+    with switch !index
+           case ?1 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statix-LabelOrd :
+    ResolveLt(t1__) -> [ H(
+                           [SOpt(HS(), "0")]
+                         , [ S("resolveLt[ ")
+                           , t1__'
+                           , S(" ]")
+                           ]
+                         )
+                       ]
+    with t1__' := <pp-one-Z(prettyprint-Statix-Occurrence) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-Statix-LabelOrd =
+    ?ResolveLt(_)
+
+  Statix-get-indent :
+    (t@ResolveLt(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"LabelOrd"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    (t@ResolveLt(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"LabelOrd"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    (t@ResolveLt(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"LabelOrd"> sort
+    with switch !index
+           case ?1 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  prettyprint-Statix-HoConstraint :
+    OccurrenceMatch(t1__) -> [ H(
+                                 [SOpt(HS(), "0")]
+                               , [ S("occurrenceMatch[ ")
+                                 , t1__'
+                                 , S(" ]")
+                                 ]
+                               )
+                             ]
+    with t1__' := <pp-one-Z(prettyprint-Statix-Occurrence) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-Statix-HoConstraint =
+    ?OccurrenceMatch(_)
+
+  Statix-get-indent :
+    (t@OccurrenceMatch(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"HoConstraint"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    (t@OccurrenceMatch(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"HoConstraint"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    (t@OccurrenceMatch(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"HoConstraint"> sort
+    with switch !index
+           case ?1 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  is-Statix-LabelRE =
+    fail
+
+  is-Statix-LabelOrd =
+    fail
+
+  is-Statix-HoConstraint =
+    fail
+
+  prettyprint-Statix-LabelRE :
+    amb([h|hs]) -> <prettyprint-Statix-LabelRE> h
+
+  prettyprint-Statix-LabelOrd :
+    amb([h|hs]) -> <prettyprint-Statix-LabelOrd> h
+
+  prettyprint-Statix-HoConstraint :
+    amb([h|hs]) -> <prettyprint-Statix-HoConstraint> h
+
+
+strategies
+  prettyprint-Statix =
+    prettyprint-Statix-Keyword
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-Keyword>
+    where <?"Keyword"> sort
+
+  prettyprint-Statix-Keyword =
+    ![S(<is-string>)]
+
+  prettyprint-Statix-Keyword :
+    amb([h|hs]) -> <prettyprint-Statix-Keyword> h
+
+
+strategies
+  prettyprint-Statix =
+    prettyprint-Statix-Type
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-Type>
+    where <?"Type"> sort
+
+  prettyprint-Statix-Type :
+    FunType(t1__, t2__) -> [ H(
+                               [SOpt(HS(), "0")]
+                             , [t1__', S(" -> "), t2__']
+                             )
+                           ]
+    with t1__' := <pp-H-list(prettyprint-Statix-SortRef|" * ")
+                   <+ pp-one-Z(prettyprint-completion-aux)> t1__
+    with t2__' := <pp-one-Z(prettyprint-Statix-SortRef) <+ pp-one-Z(prettyprint-completion-aux)> t2__
+
+  is-Statix-Type =
+    ?FunType(_, _)
+
+  Statix-get-indent :
+    (t@FunType(t1__, t2__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Type"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           case ?2 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    (t@FunType(t1__, t2__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Type"> sort
+    with switch !index
+           case ?1 :
+             separator := " * "
+           case ?2 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    (t@FunType(t1__, t2__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Type"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           case ?2 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  is-Statix-Type =
+    fail
+
+  prettyprint-Statix-Type :
+    amb([h|hs]) -> <prettyprint-Statix-Type> h
+
+  prettyprint-Statix-Type :
+    Type-Plhdr() -> [ H(
+                        [SOpt(HS(), "0")]
+                      , [S("$Type")]
+                      )
+                    ]
+
+  is-Statix-Type =
+    ?Type-Plhdr()
+
+  prettyprint-Statix-SortRef :
+    SortRef-Plhdr() -> [ H(
+                           [SOpt(HS(), "0")]
+                         , [S("$SortRef")]
+                         )
+                       ]
+
+  is-Statix-SortRef =
+    ?SortRef-Plhdr()
+
+  prettyprint-Statix-Type :
+    Type-Plhdr(_) -> [ H(
+                         [SOpt(HS(), "0")]
+                       , [S("$Type")]
+                       )
+                     ]
+
+  is-Statix-Type =
+    ?Type-Plhdr(_)
+
+  prettyprint-Statix-SortRef :
+    SortRef-Plhdr(_) -> [ H(
+                            [SOpt(HS(), "0")]
+                          , [S("$SortRef")]
+                          )
+                        ]
+
+  is-Statix-SortRef =
+    ?SortRef-Plhdr(_)
+
+  prettyprint-Statix-SortRef :
+    SortRef-Opt-Plhdr() -> [ H(
+                               []
+                             , [S("")]
+                             )
+                           ]
+
+  is-Statix-SortRef =
+    ?SortRef-Opt-Plhdr()
+
+
+strategies
+  prettyprint-Statix =
+    prettyprint-Statix-Term
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-Term>
+    where <?"Term"> sort
+
+  prettyprint-Statix-Term :
+    ArithOp(t1__) -> [ H(
+                         [SOpt(HS(), "0")]
+                       , [ S("#( ")
+                         , t1__'
+                         , S(" )")
+                         ]
+                       )
+                     ]
+    with t1__' := <pp-one-Z(prettyprint-Statix-ArithExp) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-Statix-Term =
+    ?ArithOp(_)
+
+  Statix-get-indent :
+    (t@ArithOp(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"Term"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    (t@ArithOp(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"Term"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    (t@ArithOp(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"Term"> sort
+    with switch !index
+           case ?1 :
+             ws := " "
+           otherwise :
+             ws := ""
+         end
+
+  is-Statix-Term =
+    fail
+
+  prettyprint-Statix-Term :
+    amb([h|hs]) -> <prettyprint-Statix-Term> h

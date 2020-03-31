@@ -1,0 +1,145 @@
+module statix/pp/statix/cli/CLI-pp
+
+imports
+  libstratego-gpp
+  libspoofax/sdf/pp
+  libspoofax/term/origin
+  libstratego-sglr
+  statix/signatures/statix/cli/CLI-sig
+
+
+imports
+  statix/signatures/statix/lang/Layout-sig
+  statix/signatures/statix/lang/Common-sig
+  statix/signatures/statix/lang/Core-sig
+  statix/signatures/statix/lang/Sugar-sig
+
+
+imports
+  statix/pp/statix/lang/Layout-pp
+  statix/pp/statix/lang/Common-pp
+  statix/pp/statix/lang/Core-pp
+  statix/pp/statix/lang/Sugar-pp
+
+
+strategies
+  prettyprint-example =
+    prettyprint-Statix
+
+  prettyprint-Statix =
+    fail
+
+  prettyprint-Statix(|sort) =
+    fail
+
+
+strategies
+  prettyprint-SDF-start-symbols =
+    prettyprint-Statix-start-symbols
+
+  prettyprint-Statix-start-symbols =
+    fail
+
+
+strategies
+  prettyprint-Statix-start-symbols =
+    prettyprint-Statix-CommandLine
+
+
+strategies
+  prettyprint-Statix =
+    prettyprint-Statix-CommandLine
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-CommandLine>
+    where <?"CommandLine"> sort
+
+  prettyprint-Statix-CommandLine :
+    Eval(t1__) -> [ H(
+                      [SOpt(HS(), "0")]
+                    , [t1__']
+                    )
+                  ]
+    with t1__' := <pp-one-Z(prettyprint-Statix-Constraint) <+ pp-one-Z(prettyprint-completion-aux)> t1__
+
+  is-Statix-CommandLine =
+    ?Eval(_)
+
+  Statix-get-indent :
+    (t@Eval(t1__), index) -> indent
+    where sort := <ia-get-sort> t
+          ; <?"CommandLine"> sort
+    with switch !index
+           case ?1 :
+             indent := ""
+           otherwise :
+             indent := ""
+         end
+
+  Statix-get-separator :
+    (t@Eval(t1__), index) -> separator
+    where sort := <ia-get-sort> t
+          ; <?"CommandLine"> sort
+    with switch !index
+           case ?1 :
+             separator := ""
+           otherwise :
+             separator := ""
+         end
+
+  Statix-get-leading-ws :
+    (t@Eval(t1__), index) -> ws
+    where sort := <ia-get-sort> t
+          ; <?"CommandLine"> sort
+    with switch !index
+           case ?1 :
+             ws := ""
+           otherwise :
+             ws := ""
+         end
+
+  is-Statix-CommandLine =
+    fail
+
+  prettyprint-Statix-CommandLine :
+    amb([h|hs]) -> <prettyprint-Statix-CommandLine> h
+
+  prettyprint-Statix-CommandLine :
+    CommandLine-Plhdr() -> [ H(
+                               [SOpt(HS(), "0")]
+                             , [S("$CommandLine")]
+                             )
+                           ]
+
+  is-Statix-CommandLine =
+    ?CommandLine-Plhdr()
+
+  prettyprint-Statix-Constraint :
+    Constraint-Plhdr() -> [ H(
+                              [SOpt(HS(), "0")]
+                            , [S("$Constraint")]
+                            )
+                          ]
+
+  is-Statix-Constraint =
+    ?Constraint-Plhdr()
+
+  prettyprint-Statix-CommandLine :
+    CommandLine-Plhdr(_) -> [ H(
+                                [SOpt(HS(), "0")]
+                              , [S("$CommandLine")]
+                              )
+                            ]
+
+  is-Statix-CommandLine =
+    ?CommandLine-Plhdr(_)
+
+  prettyprint-Statix-Constraint :
+    Constraint-Plhdr(_) -> [ H(
+                               [SOpt(HS(), "0")]
+                             , [S("$Constraint")]
+                             )
+                           ]
+
+  is-Statix-Constraint =
+    ?Constraint-Plhdr(_)

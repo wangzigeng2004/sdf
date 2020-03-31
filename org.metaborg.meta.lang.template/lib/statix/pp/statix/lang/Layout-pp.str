@@ -1,0 +1,120 @@
+module statix/pp/statix/lang/Layout-pp
+
+imports
+  libstratego-gpp
+  libspoofax/sdf/pp
+  libspoofax/term/origin
+  libstratego-sglr
+  statix/signatures/statix/lang/Layout-sig
+
+
+strategies
+  prettyprint-example =
+    prettyprint-Statix
+
+  prettyprint-Statix =
+    fail
+
+  prettyprint-Statix(|sort) =
+    fail
+
+
+strategies
+  prettyprint-SDF-start-symbols =
+    prettyprint-Statix-start-symbols
+
+  prettyprint-Statix-start-symbols =
+    fail
+
+
+strategies
+  prettyprint-Statix =
+    prettyprint-Statix-EOF
+
+  prettyprint-Statix =
+    prettyprint-Statix-LineComment
+
+  prettyprint-Statix =
+    prettyprint-Statix-BlockComment
+
+  prettyprint-Statix =
+    prettyprint-Statix-CommentText
+
+  prettyprint-Statix =
+    prettyprint-Statix-CommentChar
+
+  prettyprint-Statix =
+    prettyprint-Statix-CommentSlash
+
+  prettyprint-Statix =
+    prettyprint-Statix-CommentAsterisk
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-EOF>
+    where <?"EOF"> sort
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-LineComment>
+    where <?"LineComment"> sort
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-BlockComment>
+    where <?"BlockComment"> sort
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-CommentText>
+    where <?"CommentText"> sort
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-CommentChar>
+    where <?"CommentChar"> sort
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-CommentSlash>
+    where <?"CommentSlash"> sort
+
+  prettyprint-Statix(|sort):
+    t -> <prettyprint-Statix-CommentAsterisk>
+    where <?"CommentAsterisk"> sort
+
+  prettyprint-Statix-EOF =
+    ![S(<is-string>)]
+
+  prettyprint-Statix-LineComment =
+    ![S(<is-string>)]
+
+  prettyprint-Statix-BlockComment =
+    ![S(<is-string>)]
+
+  prettyprint-Statix-CommentText =
+    ![S(<is-string>)]
+
+  prettyprint-Statix-CommentChar =
+    ![S(<is-string>)]
+
+  prettyprint-Statix-CommentSlash =
+    ![S(<is-string>)]
+
+  prettyprint-Statix-CommentAsterisk =
+    ![S(<is-string>)]
+
+  prettyprint-Statix-EOF :
+    amb([h|hs]) -> <prettyprint-Statix-EOF> h
+
+  prettyprint-Statix-LineComment :
+    amb([h|hs]) -> <prettyprint-Statix-LineComment> h
+
+  prettyprint-Statix-BlockComment :
+    amb([h|hs]) -> <prettyprint-Statix-BlockComment> h
+
+  prettyprint-Statix-CommentText :
+    amb([h|hs]) -> <prettyprint-Statix-CommentText> h
+
+  prettyprint-Statix-CommentChar :
+    amb([h|hs]) -> <prettyprint-Statix-CommentChar> h
+
+  prettyprint-Statix-CommentSlash :
+    amb([h|hs]) -> <prettyprint-Statix-CommentSlash> h
+
+  prettyprint-Statix-CommentAsterisk :
+    amb([h|hs]) -> <prettyprint-Statix-CommentAsterisk> h

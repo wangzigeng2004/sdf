@@ -1,0 +1,29 @@
+module statix/signatures/statix/lang/Deprecated-sig
+
+imports
+  statix/signatures/statix/lang/Common-sig
+  statix/signatures/statix/lang/Core-sig
+
+
+signature
+  constructors
+    Filter_dep            : LabelRE -> QueryFilter
+    Min_dep               : LabelPairs -> QueryMin
+    Filter_dep            : LabelRE * HoConstraint -> QueryFilter
+    Min_dep               : LabelPairs * HoConstraint -> QueryMin
+    NamespaceFilter_dep   : LabelRE -> NamespaceFilter
+    NamespaceMin_dep      : LabelPairs -> NamespaceMin
+    QueryFilter-Plhdr     : QueryFilter
+    QueryMin-Plhdr        : QueryMin
+    HoConstraint-Plhdr    : HoConstraint
+    NamespaceFilter-Plhdr : NamespaceFilter
+    LabelRE-Plhdr         : LabelRE
+    NamespaceMin-Plhdr    : NamespaceMin
+    LabelPairs-Plhdr      : LabelPairs
+    QueryFilter-Plhdr     : COMPLETION-INSERTION -> QueryFilter
+    QueryMin-Plhdr        : COMPLETION-INSERTION -> QueryMin
+    HoConstraint-Plhdr    : COMPLETION-INSERTION -> HoConstraint
+    NamespaceFilter-Plhdr : COMPLETION-INSERTION -> NamespaceFilter
+    LabelRE-Plhdr         : COMPLETION-INSERTION -> LabelRE
+    NamespaceMin-Plhdr    : COMPLETION-INSERTION -> NamespaceMin
+    LabelPairs-Plhdr      : COMPLETION-INSERTION -> LabelPairs
