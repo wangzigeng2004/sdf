@@ -29,6 +29,7 @@ imports
   generation/completion/-
   generation/pp/-
   generation/signatures/-
+  generation/injections/-
   generation/syntax/-  
   generation/syntax/to-namespaced
   libstrc
@@ -64,6 +65,10 @@ rules
       statix-sig-ast       := <module-to-statix-sig; pp-statix-to-string  <+ !""; debug(!"The Statix signature file could not be generated. Try Reset and Reanalyze or check for unresolved references.\n"); fail> ast';
       statix-sig-filename  := <create-src-gen(|project-path, "statix-signatures", "-sig.stx")> mn;
       <write-string-to-file> (statix-sig-filename, statix-sig-ast)
+    where
+      statix-inj-ast       := <module-to-injections-str; pp-stratego-string  <+ !""; debug(!"The injection strategy file could not be generated. Try Reset and Reanalyze or check for unresolved references.\n"); fail> ast';
+      statix-inj-filename  := <create-src-gen(|project-path, "injections", "-injections.str")> mn;
+      <write-string-to-file> (statix-inj-filename, statix-inj-ast)
     where
       ds-sig-ast           := <module-to-ds-sig; pp-ds-to-string  <+ !""; debug(!"The ds signature file could not be generated. Try Reset and Reanalyze or check for unresolved references.\n"); fail> ast';
       ds-sig-filename      := <create-src-gen(|project-path, "ds-signatures", "-sig.ds")> mn;

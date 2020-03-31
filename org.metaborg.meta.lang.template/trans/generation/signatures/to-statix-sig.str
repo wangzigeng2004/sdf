@@ -1,5 +1,47 @@
 module generation/signatures/to-statix-sig
 
+imports
+  libstratego-lib
+  libstrc
+  analysis/types
+  runtime/nabl/-
+  runtime/task/-
+  runtime/types/-
+  lib/statix/signatures/-
+  lib/statix/pp/-
+  generation/gen-utils/to-str
+  generation/signatures/to-sig
+
+imports
+  signatures/aliases/-
+  signatures/aterms/-
+  signatures/basic/-
+  signatures/characterclass/-
+  signatures/constants/-
+  signatures/grammar/-
+  signatures/kernel/-
+  signatures/labels/-
+  signatures/layout/-
+  signatures/layout-constraints/-
+  signatures/lifting/-
+  signatures/literals/-
+  signatures/modules/-
+  signatures/priority/-
+  signatures/regular/-
+  signatures/renaming/-
+  signatures/restrictions/-
+  signatures/sdf2-core/-
+  signatures/sorts/-
+  signatures/symbols/-
+  signatures/TemplateLang-sig
+
 rules
   
-  module-to-statix-sig = fail
+  module-to-statix-sig:
+    Module(Unparameterized(modname), import*, section*) -> Module(modname', [])//  [is*, Signatures([Sorts(sorts*), aliases*, signatures*])])
+    with
+      modname'  := <conc-strings> ("statix-signatures/", modname, "-sig")
+//      is* := <map(to-str-import(|"-sig", "ds-signatures"))> import*;
+//      sorts* := <filter(not(?SDFSection(LexicalSyntax(_)))); collect-all(collect-sorts); nub; map(sort-to-ds-sig-sort)> s*;
+//      aliases* := <filter(section-to-ds-aliases)> section*;
+//      signatures* := <filter(section-to-ds-sig)> section*
