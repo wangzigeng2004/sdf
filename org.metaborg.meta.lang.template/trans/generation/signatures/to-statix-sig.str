@@ -36,12 +36,102 @@ imports
   signatures/TemplateLang-sig
 
 rules
+
+  stx-generate-signatures = strip-annos; stx-module-to-sig
   
-  module-to-statix-sig:
-    Module(Unparameterized(modname), import*, section*) -> Module(modname', [])//  [is*, Signatures([Sorts(sorts*), aliases*, signatures*])])
-    with
-      modname'  := <conc-strings> ("statix-signatures/", modname, "-sig")
-//      is* := <map(to-str-import(|"-sig", "ds-signatures"))> import*;
+  stx-module-to-sig:
+    Module(Unparameterized(modname), imports, sections) -> Module(modname', [Signature([Sorts(sorts'), Constructors(signatures)])])
+    with modname'  := <conc-strings> ("statix-signatures/", modname, "-sig")
+       ; imports' := <map(to-str-import(|"-sig", "statix-signatures"))> imports
+       ; sortnames := <filter(not(?SDFSection(LexicalSyntax(_)))); collect-all(stx-collect-sorts); nub> sections
+       ; sorts' := <map(stx-sort-to-sig)> sortnames
+       ; signatures := <filter(stx-section-to-ctors); flatten-list-once> sections
 //      sorts* := <filter(not(?SDFSection(LexicalSyntax(_)))); collect-all(collect-sorts); nub; map(sort-to-ds-sig-sort)> s*;
 //      aliases* := <filter(section-to-ds-aliases)> section*;
 //      signatures* := <filter(section-to-ds-sig)> section*
+
+
+  stx-collect-sorts =
+       ?DeclSort(<id>)
+    <+ ?TemplateProduction(SortDef(s),_,Attrs(<not(fetch-elem(?Reject()))>)); !s
+    <+ ?TemplateProductionWithCons(SortCons(SortDef(<id>), _), _, _)
+    <+ ?SdfProduction(SortDef(<id>),_,_)
+    <+ ?SdfProductionWithCons(SortCons(SortDef(<id>), _), _, _)
+    <+ ?SdfProduction(Cf(SortDef(<id>)), _, _)
+    <+ ?SdfProductionWithCons(SortCons(Cf(SortDef(<id>)), _), _, _)
+    <+ ?DeclSort(<id>)
+    
+  stx-sort-to-sig = !SortDecl(<stx-escape-sortname>)
+  
+  stx-escape-sortname = id
+  
+  stx-section-to-ctors:
+    SDFSection(ContextFreeSyntax(productions)) -> signatures
+  with signatures := <filter(stx-cfg-production-to-cons-sig <+ stx-cfg-template-to-cons-sig)> productions
+
+  stx-section-to-ctors:
+    TemplateSection(templates) -> signatures
+  with signatures := <filter(stx-cfg-template-to-cons-sig)> templates
+
+  stx-section-to-ctors:
+    SDFSection(Kernel(productions)) -> signatures
+  with signatures := <filter(stx-cfg-production-to-cons-sig)> productions
+  
+  stx-cfg-production-to-cons-sig = fail
+
+//  stx-cfg-production-to-cons-sig:
+//    SdfProduction(SortDef(s1), Rhs([Sort(s2)]), Attrs(a*)) -> <inj-to-ds-decl> (s1, s2)
+//    where
+//      <not(fetch-elem(?Reject()))> a*
+//
+//  stx-cfg-production-to-cons-sig:
+//    SdfProductionWithCons(SortCons(SortDef(s),c), _, Attrs(a*)) -> <cons-to-ds-decl> c
+//    where
+//      <not(fetch-elem(?Reject() + ?Bracket()))> a*
+//
+//  stx-cfg-production-to-cons-sig:
+//    SdfProductionWithCons(SortCons(Cf(SortDef(s)),c), _, Attrs(a*)) -> <cons-to-ds-decl> c
+//    where
+//      <not(fetch-elem(?Reject() + ?Bracket()))> a*
+//
+//  stx-cfg-production-to-cons-sig:
+//    SdfProductionWithCons(SortCons(Lex(SortDef(s)),c), _, Attrs(a*)) -> <cons-to-ds-decl> c
+//    where
+//      <not(fetch-elem(?Reject() + ?Bracket()))> a*
+//
+//  stx-cfg-production-to-cons-sig:
+//    SdfProduction(Cf(SortDef(s1)), Rhs([Cf(Sort(s2))]), Attrs(a*)) -> <inj-to-ds-decl> (s1, s2)
+//    where
+//      <not(fetch-elem(?Reject() + ?Bracket()))> a*
+//
+//  stx-cfg-production-to-cons-sig:
+//    SdfProduction(Cf(SortDef(s1)), Rhs([Lex(Sort(s2))]), Attrs(a*)) -> <inj-to-ds-decl> (s1, s2)
+//    where
+//      <not(fetch-elem(?Reject() + ?Bracket()))> a*
+  
+  // stx-cfg-template-to-cons-sig :: SDF3.TemplateProduction -> Statix.OpDecl
+  stx-cfg-template-to-cons-sig:
+    TemplateProductionWithCons(SortCons(SortDef(sortname), Constructor(consname)), body, Attrs(attrs))
+    -> OpDecl(consname, op)
+    where <not(stx-ignore-production)> attrs
+    with body' := <collect-all-concat(stx-cfg-sort-to-sig)> body
+       ; op := <?[] < !ConstOp(SimpleSort(sortname)) + !ArrowOp(<id>, SimpleSort(sortname))> body'
+  
+  // stx-cfg-sort-to-sig :: SDF3.SortSymbol -> Statix.SortRef
+  stx-cfg-sort-to-sig:
+    Sort(name) -> SimpleSort(name)
+  stx-cfg-sort-to-sig:
+    IterStarSep(sort, _) -> ListSort(<stx-cfg-sort-to-sig> sort)
+    
+  // stx-ignore-production :: [SDF3.Attribute] -> SDF3.Attribute
+  stx-ignore-production = fetch-elem(?Reject() + ?Bracket())
+  
+  // collect-all-concat(? -> ?) :: ? -> [?]
+  collect-all-concat(s) = collect-all(s, concatenate)
+  
+  // concatenate :: [?] * [?] -> [?] 
+  concatenate: (l1, l2) -> <at-end(!l2)> l1
+  
+  //flatten-list-once :: [[?]] -> [?]
+  flatten-list-once = foldr(![], (is-list, id) < conc + MkCons)
+  

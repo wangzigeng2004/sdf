@@ -62,7 +62,7 @@ rules
       sig-filename         := <create-src-gen(|project-path, "signatures", "-sig.str")> mn;
       <write-string-to-file> (sig-filename, sig-ast)
     where
-      statix-sig-ast       := <module-to-statix-sig; pp-statix-to-string  <+ !""; debug(!"The Statix signature file could not be generated. Try Reset and Reanalyze or check for unresolved references.\n"); fail> ast';
+      statix-sig-ast       := <stx-generate-signatures; pp-statix-to-string  <+ !""; debug(!"The Statix signature file could not be generated. Try Reset and Reanalyze or check for unresolved references.\n"); fail> ast';
       statix-sig-filename  := <create-src-gen(|project-path, "statix-signatures", "-sig.stx")> mn;
       <write-string-to-file> (statix-sig-filename, statix-sig-ast)
     where
