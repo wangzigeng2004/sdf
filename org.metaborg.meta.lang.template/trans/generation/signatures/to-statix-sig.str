@@ -147,14 +147,14 @@ rules
 
   // stx-inj-to-sig :: (SDF3.Sort, SDF3.RHS + SDF3.Template) -> Statix.OpDecl
   stx-inj-to-sig: (sortname, body) -> OpDecl(consname, op)
-  with body' := <collect-all-concat(stx-cfg-sort-to-sig)> body
+  with body' := <collect-om-concat(stx-cfg-sort-to-sig)> body
      ; op := <?[] < !ConstOp(SimpleSort(sortname)) + !ArrowOp(<id>, SimpleSort(sortname))> body'
-     ; consname := <stx-generate-injection-name> (sortname, <collect-all-concat(is-string)> body')
+     ; consname := <stx-generate-injection-name> (sortname, <collect-om-concat(is-string)> body')
 
 
   // stx-cons-to-sig :: (SDF3.Sort, SDF3.IdCon, SDF3.RHS + SDF3.Template) -> Statix.OpDecl
   stx-cons-to-sig: (sortname, consname, body) -> OpDecl(consname, op)
-  with body' := <collect-all-concat(stx-cfg-sort-to-sig)> body
+  with body' := <collect-om-concat(stx-cfg-sort-to-sig)> body
      ; op := <?[] < !ConstOp(SimpleSort(sortname)) + !ArrowOp(<id>, SimpleSort(sortname))> body'
 
 
@@ -178,6 +178,9 @@ rules
 
   // collect-all-concat<T>(? -> T) :: ? -> [T]
   collect-all-concat(s) = collect-all(s, concatenate)
+
+  // collect-om-concat<T>(? -> T) :: ? -> [T]
+  collect-om-concat(s) = collect-om(s, concatenate)
 
 
   // concatenate<T> :: ([T], [T]) -> [T]
