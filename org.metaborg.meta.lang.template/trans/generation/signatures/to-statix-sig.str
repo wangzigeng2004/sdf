@@ -109,29 +109,60 @@ rules
 //    where
 //      <not(fetch-elem(?Reject() + ?Bracket()))> a*
   
+  
   // stx-cfg-template-to-cons-sig :: SDF3.TemplateProduction -> Statix.OpDecl
+  
   stx-cfg-template-to-cons-sig:
     TemplateProductionWithCons(SortCons(SortDef(sortname), Constructor(consname)), body, Attrs(attrs))
     -> OpDecl(consname, op)
     where <not(stx-ignore-production)> attrs
     with body' := <collect-all-concat(stx-cfg-sort-to-sig)> body
        ; op := <?[] < !ConstOp(SimpleSort(sortname)) + !ArrowOp(<id>, SimpleSort(sortname))> body'
+       
+  stx-cfg-template-to-cons-sig:
+    TemplateProduction(SortDef(sortname), body, Attrs(attrs))
+    -> OpDecl(consname, op)
+    where <not(stx-ignore-production)> attrs
+    with body' := <collect-all-concat(stx-cfg-sort-to-sig)> body
+       ; op := <?[] < !ConstOp(SimpleSort(sortname)) + !ArrowOp(<id>, SimpleSort(sortname))> body'
+       ; consname := <stx-generate-injection-name> (sortname, <collect-all-concat(is-string)> body')
+       
+  
+  // stx-generate-injection-name :: (Statix.SortId, [Statix.Sort]) -> OpId
+  
+  stx-generate-injection-name: (sortname, bodynames) -> <string-join(|"2")> [sortname, targetname]
+  where targetname := <string-join(|"-")> bodynames
+  
   
   // stx-cfg-sort-to-sig :: SDF3.SortSymbol -> Statix.SortRef
+  
   stx-cfg-sort-to-sig:
     Sort(name) -> SimpleSort(name)
   stx-cfg-sort-to-sig:
     IterStarSep(sort, _) -> ListSort(<stx-cfg-sort-to-sig> sort)
     
+    
   // stx-ignore-production :: [SDF3.Attribute] -> SDF3.Attribute
+  
   stx-ignore-production = fetch-elem(?Reject() + ?Bracket())
   
-  // collect-all-concat(? -> ?) :: ? -> [?]
+  
+  // collect-all-concat<T>(? -> T) :: ? -> [T]
+  
   collect-all-concat(s) = collect-all(s, concatenate)
   
-  // concatenate :: [?] * [?] -> [?] 
+  
+  // concatenate<T> :: ([T], [T]) -> [T]
+  
   concatenate: (l1, l2) -> <at-end(!l2)> l1
   
-  //flatten-list-once :: [[?]] -> [?]
+  
+  // flatten-list-once<T> ::  [[T]] -> [T]
+  
   flatten-list-once = foldr(![], (is-list, id) < conc + MkCons)
+  
+  
+  // string-join(|string) :: [string] -> string
+  
+  string-join(|t) = separate-by(|t); concat-strings
   
