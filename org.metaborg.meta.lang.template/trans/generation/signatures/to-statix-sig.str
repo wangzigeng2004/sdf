@@ -45,7 +45,8 @@ rules
   stx-module-to-sig:
     Module(Unparameterized(modname), imports, sections) -> Module(modname', [
     	Imports(imports'),
-    	Signature([Sorts(<concatenate> (lexsorts, cfsorts)), Constructors(signatures)])
+    	Signature([Sorts(<concatenate> (lexsorts, cfsorts)), Constructors(lexplaceholder-signatures), Constructors(cfplaceholder-signatures)]),
+    	Signature([Constructors(signatures)])
     ])
   with modname' := <conc-strings> ("statix/signatures/", modname, "-sig")
      ; imports' := <flatmap(stx-to-str-import(|"-sig", "statix/signatures"))> imports
@@ -56,6 +57,8 @@ rules
      ; cfsorts := <map(stx-cfsort-to-sig)> cfsortnames
      ; lexsorts := <map(stx-lexsort-to-sig)> lexsortnames
      ; signatures := <filter(stx-section-to-ctors); flatten-list-once> sections
+     ; cfplaceholder-signatures := <map(stx-sort-to-placeholder)> cfsortnames
+     ; lexplaceholder-signatures := <map(stx-sort-to-placeholder)> lexsortnames
 
 rules
 
@@ -87,6 +90,7 @@ rules
   stx-to-module-name(|ext, folder):
     Module(Unparameterized(m)) -> <conc-strings> (folder, "/" , m, ext)
 
+rules
 
   // stx-section-to-ctors :: SDF3.Section -> [Statix.OpDecl]
 
@@ -172,7 +176,11 @@ rules
 
   // stx-ignore-production :: [SDF3.Attribute] -> SDF3.Attribute
   stx-ignore-production = fetch-elem(?Reject() + ?Bracket())
+  
+rules
 
+  // stx-sort-to-placeholder :: SDF3.Sort -> Statix.SortDecl
+  stx-sort-to-placeholder = !OpDecl($[[<id>]-Plhdr], ConstOp(SimpleSort(<id>)))
 
 rules
 
