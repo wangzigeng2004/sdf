@@ -47,8 +47,10 @@ rules
 	  imports0,
 	  imports1*,
 	  Signature([Constructors(signatures)]),
+	  Signature([Constructors(lex-signatures)]),
 	  Rules(is-rules),
 	  Rules(explication-rules),
+	  Rules(lexsort-explication-rules),
 	  Rules(placeholder-rules),
 	  Rules(sort-strategies)
     ])
@@ -60,9 +62,13 @@ rules
        ])
      ; imports1*  := <map(to-str-import(|"-injections", "injections"))> imports
      ; signatures := <filter(str-section-to-inj-sigs); flatten-list-once> sections
-     ; cfsorts := <filter(not(?SDFSection(LexicalSyntax(_)))); collect-all(stx-collect-sorts)> sections
+     ; cfsorts := <filter(?SDFSection(Sorts(_))); collect-all(stx-collect-sorts)> sections
+     ; cflexsortpairs := <map(?cfsort; stx-cfsort-to-lexsort; !(cfsort, <id>))> cfsorts
+     ; lexsorts := <map(Snd)> cflexsortpairs
+     ; lex-signatures := <map(str-cflexsortpair-to-lex-injection-sig(|lang))> cflexsortpairs
      ; is-rules := <filter(str-section-to-is-rules(|lang)); flatten-list-once> sections
      ; explication-rules := <filter(str-section-to-explication-rules(|lang)); flatten-list-once> sections
+     ; lexsort-explication-rules := <map(str-cflexsortpair-to-explication-rule(|lang))> cflexsortpairs
      ; placeholder-rules := <map(str-sort-to-placeholder-rules(|lang))> cfsorts
      ; sort-strategies := <map(str-sort-to-strategy(|lang))> cfsorts
      
@@ -205,6 +211,14 @@ rules
   str-arg-to-explication(|lang): (sort, newname) -> App(<str-arg-to-explication-call(|lang)> sort, Var(newname))
   str-arg-to-explication-call(|lang): Sort(name) -> CallNoArgs(SVar($[explicate-injections-[lang]-[name]]))
   str-arg-to-explication-call(|lang): IterStarSep(sort, _) -> Call(SVar("map"), [<str-arg-to-explication-call(|lang)> sort])
+
+rules
+
+  str-cflexsortpair-to-explication-rule(|lang): (cfsort, lexsort)
+  -> <str-inj-to-explication-rule(|lang)> (cfsort, Sort(lexsort))
+  
+  str-cflexsortpair-to-lex-injection-sig(|lang): (cfsort, lexsort)
+  -> <str-inj-to-sig> (cfsort, Sort(lexsort))
 
 rules
 
