@@ -14,6 +14,7 @@ dependencies:
   - org.metaborg:org.metaborg.meta.lib.analysis:${metaborgVersion}
   - org.metaborg:meta.lib.spoofax:${metaborgVersion}
   - org.metaborg:statix.runtime:${metaborgVersion}
+  - org.metaborg:statix.lang:${metaborgVersion}
 generates:
 - language: EditorService
   directory: src-gen
