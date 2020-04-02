@@ -219,7 +219,7 @@ rules
     Var("t"), NoAnnoList(Op(consname, [Var("t")]))
   , BA(CallNoArgs(SVar($[is-string])), Var("t"))
   ))
-  with args := [(Sort(lexsort), _)] 
+  with args := [(Sort(lexsort), lexsort)] 
      ; consname := <str-generate-inj-name> (cfsort, args)
   
   str-cflexsortpair-to-lex-injection-sig(|lang): (cfsort, lexsort)
