@@ -215,7 +215,12 @@ rules
 rules
 
   str-cflexsortpair-to-explication-rule(|lang): (cfsort, lexsort)
-  -> <str-inj-to-explication-rule(|lang)> (cfsort, Sort(lexsort))
+  -> RDefNoArgs($[explicate-injections-[lang]-[cfsort]], Rule(
+    Var("t"), NoAnnoList(Op(consname, [Var("t")]))
+  , BA(CallNoArgs(SVar($[is-string])), Var("t"))
+  ))
+  with args := [(Sort(lexsort), _)] 
+     ; consname := <str-generate-inj-name> (cfsort, args)
   
   str-cflexsortpair-to-lex-injection-sig(|lang): (cfsort, lexsort)
   -> <str-inj-to-sig> (cfsort, Sort(lexsort))
