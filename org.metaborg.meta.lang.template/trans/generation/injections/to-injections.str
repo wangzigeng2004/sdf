@@ -63,7 +63,7 @@ rules
      ; imports1*  := <map(to-str-import(|"-injections", "injections"))> imports
      ; signatures := <filter(str-section-to-inj-sigs); flatten-list-once> sections
      ; cfsorts := <filter(?SDFSection(Sorts(_))); collect-all(stx-collect-sorts)> sections
-     ; cflexsortpairs := <map(?cfsort; stx-cfsort-to-lexsort; !(cfsort, <id>))> cfsorts
+     ; cflexsortpairs := <map(\cfsort -> (cfsort, <stx-cfsort-to-lexsort> cfsort)\)> cfsorts
      ; lexsorts := <map(Snd)> cflexsortpairs
      ; lex-signatures := <map(str-cflexsortpair-to-lex-injection-sig(|lang))> cflexsortpairs
      ; is-rules := <filter(str-section-to-is-rules(|lang)); flatten-list-once> sections
