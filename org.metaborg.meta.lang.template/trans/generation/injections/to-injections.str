@@ -63,7 +63,7 @@ rules
      ; imports1*  := <map(to-str-import(|"-injections", "injections"))> imports
      ; signatures := <filter(str-section-to-inj-sigs); flatten-list-once> sections
      ; cfsorts := <filter(?SDFSection(Sorts(_))); collect-all(stx-collect-sorts)> sections
-     ; cflexsortpairs := <map(?cfsort; stx-cfsort-to-lexsort; !(cfsort, <id>))> cfsorts
+     ; cflexsortpairs := <map(\cfsort -> (cfsort, <stx-cfsort-to-lexsort> cfsort)\)> cfsorts
      ; lexsorts := <map(Snd)> cflexsortpairs
      ; lex-signatures := <map(str-cflexsortpair-to-lex-injection-sig(|lang))> cflexsortpairs
      ; is-rules := <filter(str-section-to-is-rules(|lang)); flatten-list-once> sections
@@ -215,7 +215,12 @@ rules
 rules
 
   str-cflexsortpair-to-explication-rule(|lang): (cfsort, lexsort)
-  -> <str-inj-to-explication-rule(|lang)> (cfsort, Sort(lexsort))
+  -> RDefNoArgs($[explicate-injections-[lang]-[cfsort]], Rule(
+    Var("t"), NoAnnoList(Op(consname, [Var("t")]))
+  , BA(CallNoArgs(SVar($[is-string])), Var("t"))
+  ))
+  with args := [(Sort(lexsort), lexsort)] 
+     ; consname := <str-generate-inj-name> (cfsort, args)
   
   str-cflexsortpair-to-lex-injection-sig(|lang): (cfsort, lexsort)
   -> <str-inj-to-sig> (cfsort, Sort(lexsort))
