@@ -48,8 +48,8 @@ rules
     	Signature([Sorts(<concatenate> (lexsorts, cfsorts)), Constructors(lexsort-injection-signatures), Constructors(cfplaceholder-signatures)]),
     	Signature([Constructors(signatures)])
     ])
-  with modname' := <conc-strings> ("statix/signatures/", modname, "-sig")
-     ; imports' := <flatmap(stx-to-str-import(|"-sig", "statix/signatures"))> imports
+  with modname' := <conc-strings> ("signatures/", modname, "-sig")
+     ; imports' := <flatmap(stx-to-str-import(|"-sig", "signatures"))> imports
      ; cfsortnames := <filter(?SDFSection(Sorts(_))); collect-all(stx-collect-sorts)> sections
      ; cflexsortpairs := <map(?cfsort; stx-cfsort-to-lexsort; !(cfsort, <id>))> cfsortnames
      ; lexsortnames := <map(Snd)> cflexsortpairs
