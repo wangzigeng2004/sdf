@@ -214,6 +214,8 @@ rules
   
   str-arg-to-explication(|lang): (sort, newname) -> App(<str-arg-to-explication-call(|lang)> sort, Var(newname))
   str-arg-to-explication-call(|lang): Sort(name) -> CallNoArgs(SVar($[explicate-injections-[lang]-[name]]))
+  str-arg-to-explication-call(|lang): Opt(sort) -> <fail>	// TODO: Implement
+  str-arg-to-explication-call(|lang): IterSep(sort, _) -> Call(SVar("map"), [<str-arg-to-explication-call(|lang)> sort])
   str-arg-to-explication-call(|lang): IterStarSep(sort, _) -> Call(SVar("map"), [<str-arg-to-explication-call(|lang)> sort])
 
 rules
@@ -323,11 +325,18 @@ rules
 
   str-extract-sort-arg: s@Sort(name) -> (s, argname)
     with argname := $[t[<next-counter> "injections"]]
+  str-extract-sort-arg: s@Opt(sort) -> (s, argname)
+    with argname := $[t[<next-counter> "injections"]]
   str-extract-sort-arg: s@IterStarSep(sort, _) -> (s, argname)
+    with argname := $[ts[<next-counter> "injections"]]
+  str-extract-sort-arg: s@IterSep(sort, _) -> (s, argname)
     with argname := $[ts[<next-counter> "injections"]]
   
   str-sort-get-name: Sort(name) -> name
+  str-sort-get-name: Opt(sort) -> <str-sort-get-name> sort
   str-sort-get-name: IterStarSep(sort, _) -> $[[<str-sort-get-name> sort]s]
+  str-sort-get-name: IterSep(sort, _) -> $[[<str-sort-get-name> sort]s]
+  
   
   // Generates a constructor name for the injection with the specified sort name and arguments
   str-generate-inj-name: (sortname, args) -> consname
