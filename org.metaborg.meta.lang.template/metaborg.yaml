@@ -25,7 +25,7 @@ generates:
 - language: ds
   directory: src-gen
 - language: StatixLang
-  directory: src-gen
+  directory: src-gen/statix
 exports:
 - language: Stratego-Sugar
   directory: src-gen  
