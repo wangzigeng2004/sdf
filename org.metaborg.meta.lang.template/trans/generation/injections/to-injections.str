@@ -117,7 +117,7 @@ rules
   // str-inj-to-sig :: (SDF3.Sort, SDF3.RHS + SDF3.Template) -> Stratego.?
   str-inj-to-sig: (sortname, body) -> OpDecl(consname, FunType(body', ConstType(SortNoArgs(sortname))))
   with body' := <collect-om-concat(str-cf-sort-to-sig)> body
-     ; consname := <stx-generate-injection-name> (sortname, <collect-all-concat(is-string)> body')
+     ; consname := <stx-generate-injection-name> (<collect-all-concat(is-string)> body', sortname)
 
   // str-cf-sort-to-sig :: SDF3.SortSymbol -> Stratego.?
   str-cf-sort-to-sig:
@@ -340,5 +340,5 @@ rules
   
   // Generates a constructor name for the injection with the specified sort name and arguments
   str-generate-inj-name: (sortname, args) -> consname
-  with consname := <stx-generate-injection-name> (sortname, <map(?(<id>, _); str-sort-get-name)> args)
+  with consname := <stx-generate-injection-name> (<map(?(<id>, _); str-sort-get-name)> args, sortname)
   
