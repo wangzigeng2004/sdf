@@ -61,17 +61,14 @@ rules
       sig-string           := <module-to-sig; pp-stratego-string <+ !""; debug(!"Signature files could not be generated. Try Reset and Reanalyze or check for unresolved references.\n"); fail> ast';
       sig-filename         := <get-src-gen(|project-path, "signatures", "-sig.str")> mn;
       sig-result           := (sig-filename, sig-string)
-      sig-ast              := <module-to-sig; pp-stratego-string <+ !""; debug(!"Signature files could not be generated. Try Reset and Reanalyze or check for unresolved references.\n"); fail> ast';
-      sig-filename         := <get-src-gen(|project-path, "signatures", "-sig.str")> mn;
-      sig-result           := (sig-filename, sig-ast)
     where
-      statix-sig-ast       := <stx-generate-signatures; pp-statix-to-string  <+ !""; debug(!"The Statix signature file could not be generated. Try Reset and Reanalyze or check for unresolved references.\n"); fail> ast';
+      statix-sig-string    := <stx-generate-signatures; pp-statix-to-string  <+ !""; debug(!"The Statix signature file could not be generated. Try Reset and Reanalyze or check for unresolved references.\n"); fail> ast';
       statix-sig-filename  := <get-src-gen(|project-path, "statix/signatures", "-sig.stx")> mn;
-      statix-sig-result    := (statix-sig-filename, statix-sig-ast)
+      statix-sig-result    := (statix-sig-filename, statix-sig-string)
     where
-      statix-inj-ast       := <str-generate-injections; pp-stratego-string  <+ !""; debug(!"The injection strategy file could not be generated. Try Reset and Reanalyze or check for unresolved references.\n"); fail> ast';
+      statix-inj-string    := <str-generate-injections; pp-stratego-string  <+ !""; debug(!"The injection strategy file could not be generated. Try Reset and Reanalyze or check for unresolved references.\n"); fail> ast';
       statix-inj-filename  := <get-src-gen(|project-path, "injections", "-injections.str")> mn;
-      statix-inj-result    := (statix-inj-filename, statix-inj-ast)
+      statix-inj-result    := (statix-inj-filename, statix-inj-string)
     where
       ds-sig-string        := <module-to-ds-sig; pp-ds-to-string  <+ !""; debug(!"The ds signature file could not be generated. Try Reset and Reanalyze or check for unresolved references.\n"); fail> ast';
       ds-sig-filename      := <get-src-gen(|project-path, "ds-signatures", "-sig.ds")> mn;
